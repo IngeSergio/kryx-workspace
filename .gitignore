@@ -1,0 +1,16 @@
+# Runtime/local state
+.openclaw/
+
+# Private memory and dreams - personal context
+memory/
+dreams/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Logs
+*.log
