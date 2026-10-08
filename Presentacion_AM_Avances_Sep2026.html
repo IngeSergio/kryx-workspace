@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orión × Aeroméxico — Avances Sep 2026</title>
+<style>
+  :root{
+    --navy:#0A1E3F; --navy2:#122C57; --coral:#F0047F; --teal:#00B2C4; --green:#16A34A;
+    --ink:#0A1E3F; --mut:#5A6B85; --bg:#F5F7FB; --card:#FFFFFF; --line:#E3E8F2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .deck{scroll-snap-type:y proximity}
+  .slide{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:7vh 9vw;position:relative;scroll-snap-align:start;border-bottom:1px solid var(--line);overflow:hidden}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .slide.in .reveal{opacity:1;transform:none}
+  .slide.in .reveal:nth-child(2){transition-delay:.08s}
+  .slide.in .reveal:nth-child(3){transition-delay:.16s}
+  .slide.in .reveal:nth-child(4){transition-delay:.24s}
+  .slide.in .reveal:nth-child(5){transition-delay:.32s}
+  .slide.in .reveal:nth-child(6){transition-delay:.40s}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:1.4rem}
+  .tag.seguro{background:#FDE7F1;color:var(--coral)}
+  .tag.humano{background:#E6F7F9;color:#008A99}
+  .tag.medible{background:#E9EEFB;color:#2647A6}
+  .tag.tec{background:#EAF0FF;color:#0A1E3F}
+  h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;font-weight:800;letter-spacing:-.02em}
+  h2{font-size:clamp(1.7rem,3.6vw,2.7rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem}
+  .sub{font-size:clamp(1rem,1.6vw,1.35rem);color:var(--mut);font-weight:500;max-width:60ch;margin-top:1rem;line-height:1.5}
+  .kicker{font-size:.8rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem}
+  .hero{color:#fff;background:linear-gradient(135deg,#08152B,#0A1E3F 45%,#1C3E7A 100%);background-size:200% 200%;animation:grad 14s ease infinite}
+  @keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .hero:after{content:"";position:absolute;width:60vw;height:60vw;right:-20vw;top:-20vw;background:radial-gradient(circle,rgba(240,4,127,.18),transparent 60%);border-radius:50%;animation:float 12s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(-3vw,3vw)}}
+  @keyframes mxpulse{0%{transform:scale(.5);opacity:.75}100%{transform:scale(2.4);opacity:0}}
+  @keyframes mxflow{to{stroke-dashoffset:-32}}
+  .mxring{transform-box:fill-box;transform-origin:center;animation:mxpulse 2.6s ease-out infinite}
+  .mxflow{stroke-dasharray:5 9;animation:mxflow 1.1s linear infinite}
+  @media print{.mxring{animation:none;opacity:.35}.mxflow{animation:none}}
+  .cnt{font-weight:800;paint-order:stroke;stroke:#F5F7FB;stroke-width:3.6px;stroke-linejoin:round}
+  .mapcap{color:var(--mut);font-size:.92rem;font-weight:600;margin-top:1rem;text-align:center;line-height:1.4}
+  .mapcap b{color:var(--coral)}
+  .hero h1{color:#fff}.hero .sub{color:#B8C6E0}.hero .kicker{color:var(--teal)}
+  .brandrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;font-weight:800;font-size:1.05rem;letter-spacing:.02em}
+  .brandrow .x{color:var(--coral);font-size:1.3rem}
+  .pillbar{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:3rem}
+  .pillbar span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#DCE6F7;padding:.5rem 1rem;border-radius:999px;font-size:.85rem;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.1rem;margin-top:2.4rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.6rem;box-shadow:0 6px 24px rgba(10,30,63,.05)}
+  .card .num{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.02em;line-height:1}
+  .card .lbl{color:var(--mut);font-size:.95rem;margin-top:.5rem;font-weight:600}
+  .card.accent{background:linear-gradient(135deg,var(--coral),#C70468);color:#fff;border:none}
+  .card.accent .lbl{color:#FCE0EE}
+  .card.tealc{background:linear-gradient(135deg,var(--teal),#0090A0);color:#fff;border:none}
+  .card.tealc .lbl{color:#DDF6F9}
+  .card.greenc{background:linear-gradient(135deg,var(--green),#0E7A37);color:#fff;border:none}
+  .card.greenc .lbl{color:#DCF5E5}
+  .card.navyc{background:linear-gradient(135deg,var(--navy),#1C3E7A);color:#fff;border:none}
+  .card.navyc .lbl{color:#C3D1EA}
+  .feat{display:grid;grid-template-columns:1.1fr .9fr;gap:2.5rem;align-items:center}
+  @media(max-width:820px){.feat{grid-template-columns:1fr}}
+  ul.pts{margin-top:1.4rem;list-style:none}
+  ul.pts li{padding:.55rem 0 .55rem 1.6rem;position:relative;font-size:1.05rem;color:#25324a;line-height:1.5}
+  ul.pts li:before{content:"";position:absolute;left:0;top:1.1rem;width:8px;height:8px;border-radius:50%;background:var(--coral)}
+  .value{background:#fff;border-left:4px solid var(--teal);border-radius:0 14px 14px 0;padding:1.3rem 1.5rem;margin-top:1.8rem;box-shadow:0 6px 24px rgba(10,30,63,.05)}
+  .value b{color:var(--navy)}
+  .value .h{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:700;display:block;margin-bottom:.5rem}
+  .bars{display:flex;align-items:flex-end;gap:1.6rem;height:230px;margin-top:2.5rem;padding-bottom:2.2rem;border-bottom:2px solid var(--line)}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .bar .fill{width:70%;background:linear-gradient(180deg,var(--teal),var(--navy2));border-radius:10px 10px 0 0;position:relative;height:0;transition:height 1.1s cubic-bezier(.2,.7,.2,1)}
+  .slide.in .bar .fill{height:var(--h)}
+  .bar .v{position:absolute;top:-1.7rem;left:50%;transform:translateX(-50%);font-weight:800;font-size:1.05rem;color:var(--navy);white-space:nowrap}
+  .bar .x{position:absolute;bottom:-2rem;left:50%;transform:translateX(-50%);color:var(--mut);font-weight:600;font-size:.9rem;white-space:nowrap}
+  .foot{position:absolute;bottom:2.5vh;left:9vw;right:9vw;display:flex;justify-content:space-between;color:var(--mut);font-size:.8rem;font-weight:600;letter-spacing:.04em}
+  .hero .foot{color:#6E80A6}
+  .access{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2rem}
+  @media(max-width:820px){.access{grid-template-columns:1fr}}
+  .access .card b{font-size:1.15rem}
+  .access .card a{color:var(--teal);text-decoration:none;font-weight:700;word-break:break-all}
+  .access .card .mut{color:var(--mut);font-size:.9rem;margin-top:.4rem}
+  .flow{display:flex;align-items:stretch;gap:1rem;margin-top:2rem;flex-wrap:wrap}
+  .flow .node{flex:1;min-width:150px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.2rem;box-shadow:0 6px 24px rgba(10,30,63,.05)}
+  .flow .node b{display:block;color:var(--navy);font-size:1.02rem}
+  .flow .node p{color:var(--mut);font-size:.9rem;margin-top:.3rem}
+  .flow .node .fp{padding:.5rem 0;border-top:1px solid var(--line)}
+  .flow .node .fp:first-of-type{border-top:none}
+  .flow .node .fp .pn{display:block;color:var(--navy);font-weight:700;font-size:.98rem;line-height:1.25}
+  .flow .node .fp .pd{display:block;color:var(--mut);font-size:.92rem;margin-top:.15rem;line-height:1.3}
+  .flow .arrow{display:flex;align-items:center;color:var(--coral);font-size:1.6rem;font-weight:800}
+  @media(max-width:820px){.flow{flex-direction:column}.flow .arrow{transform:rotate(90deg);justify-content:center}}
+  .tl{margin-top:1.8rem;display:flex;flex-direction:column}
+  .tl .row{display:grid;grid-template-columns:150px 1fr;gap:1.4rem;align-items:start;padding:.85rem 0;border-top:1px solid var(--line)}
+  .tl .row:first-child{border-top:none}
+  .tl .t{font-weight:800;color:var(--teal);font-size:1.05rem;white-space:nowrap;letter-spacing:-.01em}
+  .tl .row.hot .t{color:var(--coral)}
+  .tl .d{color:#25324a;font-size:1.02rem;line-height:1.45}
+  .tl .d b{color:var(--navy)}
+  @media(max-width:820px){.tl .row{grid-template-columns:1fr;gap:.15rem}}
+  .badge{display:inline-block;background:#FFF4E5;color:#B26A00;font-weight:700;font-size:.8rem;padding:.35rem .8rem;border-radius:999px;margin-top:1.4rem}
+  .posgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-top:1.6rem}
+  .pos{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem;box-shadow:0 4px 16px rgba(10,30,63,.04)}
+  .pos b{display:block;color:var(--navy);font-size:.95rem;line-height:1.2}
+  .pos .m{color:var(--mut);font-size:.85rem;margin-top:.3rem;font-weight:600;line-height:1.35}
+  .pos .c{color:var(--teal);font-weight:800}
+  .cta{color:#fff;background:linear-gradient(135deg,#08152B,#0A1E3F 45%,#1C3E7A 100%);background-size:200% 200%;animation:grad 14s ease infinite}
+  .cta h2{color:#fff}.cta .sub{color:#C3D1EA}
+  .prog{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,var(--teal),var(--coral));z-index:99;transition:width .1s}
+  .nav{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:50}
+  .nav a{width:10px;height:10px;border-radius:50%;background:#C6D0E2;transition:.3s}
+  .nav a.on{background:var(--coral);transform:scale(1.4)}
+  .hint{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(10,30,63,.82);color:#fff;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:999px;z-index:60;transition:opacity .6s}
+  .anexo{display:none}
+  body.show-anexos .anexo{display:flex}
+  .anexlink{position:fixed;bottom:16px;right:18px;z-index:60;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:#6E80A6;text-decoration:none;opacity:.45;transition:opacity .3s}
+  .anexlink:hover{opacity:1;color:var(--coral)}
+  @media print{.slide{min-height:auto;page-break-after:always;padding:5vh 6vw}.reveal{opacity:1;transform:none}.bar .fill{height:var(--h)!important}.prog,.nav,.hint,.anexlink{display:none}.hero,.cta{animation:none}.anexo{display:flex!important}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<nav class="nav" id="nav"></nav>
+<div class="hint" id="hint">Haz click para avanzar →</div>
+<a class="anexlink" id="anexlink" href="#s12">Anexos · metodología (A)</a>
+<div class="deck">
+
+<!-- 1 HERO -->
+<section class="slide hero" id="s1">
+  <div class="brandrow reveal">ORIÓN <span class="x">×</span> AEROMÉXICO</div>
+  <div class="kicker reveal">Reunión de avances · Septiembre 2026</div>
+  <h1 class="reveal">Avances y Novedades<br>Operativas</h1>
+  <p class="sub reveal">Consolidando un servicio más <b style="color:#fff">seguro, humano, medible y tecnológico</b>, alineado a la visión de excelencia de Aeroméxico.</p>
+  <div class="pillbar reveal"><span>Seguro</span><span>Humano</span><span>Medible</span><span>Tecnológico</span></div>
+  <div class="foot"><span>Grupo Orión</span><span>Confidencial · Aeroméxico</span></div>
+</section>
+
+<!-- 2 CONTEXTO -->
+<section class="slide" id="s2">
+  <div class="kicker reveal">Los avances del trimestre</div>
+  <h2 class="reveal">Cuatro implementaciones, cuatro pilares</h2>
+  <p class="sub reveal">Todo lo presentado hoy ya está <b>en producción</b> y respaldado por datos reales de la operación de Aeroméxico.</p>
+  <div class="grid reveal">
+    <div class="card"><div class="num" style="color:var(--teal)">01</div><div class="lbl">Módulo de Guardias</div></div>
+    <div class="card"><div class="num" style="color:#2647A6">02</div><div class="lbl">Mostrador por bahía</div></div>
+    <div class="card"><div class="num" style="color:var(--coral)">03</div><div class="lbl">Mantenimiento y Refacciones</div></div>
+    <div class="card"><div class="num" style="color:var(--navy)">04</div><div class="lbl">Red Nacional Conectada</div></div>
+  </div>
+  <div class="foot"><span>Avances Sep 2026</span><span>02</span></div>
+</section>
+
+<!-- 3 GRAN NUMERO -->
+<section class="slide" id="s3">
+  <div class="kicker reveal">El trimestre en números · Aeroméxico</div>
+  <h2 class="reveal">Operación medible, a escala</h2>
+  <p class="sub reveal">La operación de <b>Aeroméxico</b> en la estación de Ciudad de México, del <b>1 de julio al 21 de septiembre de 2026</b>.</p>
+  <div class="grid reveal">
+    <div class="card navyc"><div class="num">119,681</div><div class="lbl">Servicios gestionados<br>en el periodo</div></div>
+    <div class="card accent"><div class="num">−3.3 pp</div><div class="lbl">Reducción de no-show global<br>vs trimestre anterior (17.8% → 14.5%)</div></div>
+    <div class="card"><div class="num" style="color:var(--coral)">14.5%</div><div class="lbl">No-show global del periodo<br>(salidas + llegadas · pax que no se presentó)</div></div>
+  </div>
+  <p class="sub reveal" style="font-size:.9rem;margin-top:1.2rem">El <b>no-show global</b> incluye salidas y llegadas. Trimestre anterior (abr–jun 2026): 17.8%. En la lámina de mostrador (09) se aísla el no-show <b>de salidas</b> para medir el efecto del mostrador dedicado.</p>
+  <div class="foot"><span>El trimestre en números</span><span>03</span></div>
+</section>
+
+<!-- 4 GUARDIAS -->
+<section class="slide" id="s4">
+  <span class="tag humano reveal">Pilar · Humano + Seguro</span>
+  <h2 class="reveal">Módulo de Guardias — Despliegue en piso</h2>
+  <p class="sub reveal">El software <b>identifica cada guardia</b> y asigna <b>coordinador dedicado</b> por posición, siguiendo el <b>recorrido del pasajero</b> — de documentación hasta abordaje. Guardias rotativas según el flujo, con refuerzo en los bloques de alta demanda.</p>
+  <div class="pos reveal" style="margin:1.4rem 0 .4rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+    <b style="color:var(--navy)">Centro de Operaciones Orión L3</b>
+    <span class="m" style="margin:0">Monitoreo en tiempo real del personal activo</span>
+    <span class="m" style="margin:0">· Centro de Mando AM: <span class="c">1</span> coordinador</span>
+  </div>
+  <div class="flow reveal" style="margin-top:1rem">
+    <div class="node"><b style="font-size:1.08rem;margin-bottom:.7rem">1 · Documentación</b>
+      <div class="fp"><span class="pn">Mostrador 39 · L3</span><span class="pd"><span class="c">1</span> coord · <span class="c">10</span> colab</span></div>
+      <div class="fp"><span class="pn">Mostrador 1 · L2</span><span class="pd"><span class="c">1</span> coord · <span class="c">10</span> colab</span></div>
+      <div class="fp"><span class="pn">Bahía L1 Premier</span><span class="pd"><span class="c">1</span> coord · <span class="c">5</span> colab</span></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="node"><b style="font-size:1.08rem;margin-bottom:.7rem">2 · Filtros</b>
+      <div class="fp"><span class="pn">Filtros M y K</span><span class="pd"><span class="c">1</span> coord · <span class="c">10–16</span> colab según flujo</span></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="node"><b style="font-size:1.08rem;margin-bottom:.7rem">3 · Conexiones</b>
+      <div class="fp"><span class="pn">Internacional</span><span class="pd"><span class="c">1</span> coord · <span class="c">3</span> colab</span></div>
+      <div class="fp"><span class="pn">Nacional</span><span class="pd"><span class="c">1</span> coord · <span class="c">3</span> colab</span></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="node"><b style="font-size:1.08rem;margin-bottom:.7rem">4 · Abordaje</b>
+      <div class="fp"><span class="pn">CAC Internacional</span><span class="pd"><span class="c">1</span> coord · <span class="c">3</span> colab</span></div>
+      <div class="fp"><span class="pn">CAC Nacional</span><span class="pd"><span class="c">1</span> coord · <span class="c">1–3</span> colab</span></div>
+      <div class="fp"><span class="pn">R1 a S-6 (75-81)</span><span class="pd"><span class="c">1</span> coord · <span class="c">3</span> colab</span></div>
+      <div class="fp"><span class="pn">Dedo L · PM/PRM</span><span class="pd">según demanda</span></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="node"><b style="font-size:1.08rem;margin-bottom:.7rem">5 · Asistencia especial</b>
+      <div class="fp"><span class="pn">CAC Aerocares</span><span class="pd"><span class="c">1</span> coord · <span class="c">12</span> colab</span></div>
+    </div>
+  </div>
+  <p class="sub reveal" style="font-size:.9rem;margin-top:1.2rem"><b>Refuerzo en bloques de alta demanda:</b> matutino 07:20–08:50 · vespertino 13:30–15:30. Todos los coordinadores operan con <b>dispositivos inteligentes</b>: registran y asignan servicios al momento.</p>
+  <div class="foot"><span>Módulo de Guardias · Despliegue</span><span>04</span></div>
+</section>
+
+<!-- 4T HORARIO GUARDIA MATUTINA -->
+<section class="slide" id="s4t">
+  <span class="tag humano reveal">Pilar · Humano + Seguro</span>
+  <h2 class="reveal">Guardia matutina — ventana horaria</h2>
+  <p class="sub reveal">Flujo real del <b>turno matutino</b>, franja por franja.</p>
+  <div class="tl reveal">
+    <div class="row"><div class="t">05:30 – 09:00</div><div class="d">Flujo continuo en abordajes y recepciones (<b>aerocares</b>).</div></div>
+    <div class="row"><div class="t">06:00 – 07:40</div><div class="d">Operación en posiciones <b>R-S</b> y <b>dedo L</b>.</div></div>
+    <div class="row"><div class="t">Bloque matutino</div><div class="d">Contacto en <b>52–62</b> y <b>63–74</b>.</div></div>
+    <div class="row"><div class="t">09:40 – 12:00</div><div class="d">Carga en <b>recepciones 75–81</b>.</div></div>
+    <div class="row"><div class="t">09:50 – 12:00</div><div class="d"><b>Internacional</b> → posiciones <b>52–62</b>.</div></div>
+    <div class="row"><div class="t">11:00</div><div class="d"><b>Nacional</b> → posiciones <b>63–81</b>.</div></div>
+  </div>
+  <div class="value reveal" style="margin-top:1.4rem"><span class="h">Picos de demanda</span><b>Acapulco</b> y <b>Oaxaca</b>: +5 servicios simultáneos, hasta <b>30 en simultáneo</b>.</div>
+  <div class="foot"><span>Guardia matutina · ventana horaria</span><span>05</span></div>
+</section>
+
+<!-- 4T2 VENTANA HORARIA TARDE Y NOCHE -->
+<section class="slide" id="s4t2">
+  <span class="tag humano reveal">Pilar · Humano + Seguro</span>
+  <h2 class="reveal">Ventana horaria — tarde y noche</h2>
+  <p class="sub reveal">El flujo se transforma y se sostiene hasta la madrugada.</p>
+  <div class="tl reveal">
+    <div class="row"><div class="t">12:00</div><div class="d">Sube flujo en <b>mostradores</b> (salidas vespertinas); toda la terminal activa.</div></div>
+    <div class="row"><div class="t">13:20 – 15:40</div><div class="d">Recarga en <b>R1–S6</b> + operación continua.</div></div>
+    <div class="row hot"><div class="t">≈ 16:00</div><div class="d">Curva de <b>~50 min</b>, seguida de bloque fuerte de <b>abordajes</b>.</div></div>
+    <div class="row hot"><div class="t">16:30 – 21:00</div><div class="d">Bloque de <b>recibos</b>: hasta <b>90 servicios</b> dispersos (inter/nacional).</div></div>
+    <div class="row"><div class="t">Nocturno</div><div class="d">Documentación <b>transnacionales</b> + recepción en paralelo.</div></div>
+    <div class="row hot"><div class="t">23:50 → 03:30</div><div class="d">Cierre en <b>mostrador</b> y reinicio.</div></div>
+  </div>
+  <div class="foot"><span>Ventana horaria · tarde y noche</span><span>06</span></div>
+</section>
+
+<!-- 4B DIMENSIONAMIENTO DE GUARDIAS -->
+<section class="slide" id="s4b">
+  <span class="tag medible reveal">Pilar · Medible + Humano</span>
+  <h2 class="reveal">Guardias dimensionadas por demanda real</h2>
+  <p class="sub reveal">Las <b>llegadas son el 65%</b> de la operación y caen en <b>bancos simultáneos</b>: varios vuelos aterrizan a la vez y piden silla al mismo tiempo. La curva define <b>dónde y cuánto reforzar</b>.</p>
+  <div class="bars reveal" style="height:150px;margin-top:1.3rem;padding-bottom:1.2rem">
+    <div class="bar"><div class="fill" style="--h:40%"><span class="v">18</span><span class="x">07:00</span></div></div>
+    <div class="bar"><div class="fill" style="--h:45%"><span class="v">20</span><span class="x">09:30</span></div></div>
+    <div class="bar"><div class="fill" style="--h:70%"><span class="v">31</span><span class="x">10:30</span></div></div>
+    <div class="bar"><div class="fill" style="--h:72%"><span class="v">32</span><span class="x">12:30</span></div></div>
+    <div class="bar"><div class="fill" style="--h:74%"><span class="v">33</span><span class="x">13:00</span></div></div>
+    <div class="bar"><div class="fill" style="--h:90%"><span class="v">40</span><span class="x">15:00</span></div></div>
+    <div class="bar"><div class="fill" style="--h:52%"><span class="v">23</span><span class="x">18:00</span></div></div>
+  </div>
+  <p class="sub reveal" style="font-size:.85rem;margin-top:1.1rem">Sillas de <b>llegada</b> solicitadas por franja de 30 min · promedio diario.</p>
+  <div class="value reveal" style="margin-top:1rem;padding:1rem 1.4rem"><span class="h" style="margin-bottom:.3rem">Naturaleza del déficit</span>No es falta de plantilla: es de <b>simultaneidad</b> en los bancos de llegada, agravada por la <b>falta de info previa</b>. En el periodo, <b>52.5% de las sillas de llegada AM en MEXT2 (26,266 de 50,072) entraron como UH — última hora, sin aviso previo de la estación de origen</b> → imposibles de planear. El 47.5% restante sí venía cargado en sistema.</div>
+  <div class="grid reveal" style="margin-top:1rem">
+    <div class="card navyc"><div class="num">63</div><div class="lbl">Sillas pico en una sola franja de 30 min (19-sep · 15:00)</div></div>
+    <div class="card"><div class="num" style="color:var(--coral)">15–20</div><div class="lbl">Operadores libres para responder en el pico de la tarde</div></div>
+    <div class="card accent"><div class="num">+45</div><div class="lbl">Guardia de refuerzo requerida · franja de tiempo 11:00–16:00</div></div>
+  </div>
+  <div class="value reveal" style="margin-top:1rem;padding:1rem 1.4rem"><span class="h" style="margin-bottom:.3rem">Y la demanda va en aumento</span><b>+15% de servicios AM en MEXT2 vs agosto 2025</b> (25,523 → 29,354) · la estación completa creció <b>+25%</b>. No es carga estática: crece año contra año, y la guardia debe escalar con ella.</div>
+  <div class="foot"><span>Dimensionamiento de guardias · demanda de llegadas</span><span>07</span></div>
+</section>
+
+<!-- 5R POSICIONES REMOTAS -->
+<section class="slide" id="s5r">
+  <span class="tag medible reveal">Pilar · Medible + Humano</span>
+  <h2 class="reveal">Posiciones remotas — carga que no se ve</h2>
+  <p class="sub reveal">Cuando un vuelo se asigna a <b>posición remota</b> (salas 82–89, sin dedo de abordar), la mayoría de sus servicios se vuelven <b>pasillera</b>: el operador traslada al pasajero en cobús hasta la aeronave. Cada vuelo remoto <b>consume un elemento adicional</b> que no se refleja en la métrica de servicios por operador.</p>
+  <div class="grid reveal">
+    <div class="card navyc"><div class="num">552</div><div class="lbl">Vuelos AM en posición remota<br>en el trimestre</div></div>
+    <div class="card accent"><div class="num">631</div><div class="lbl">Servicios ejecutados<br>en sala remota</div></div>
+    <div class="card"><div class="num" style="color:var(--coral)">+1</div><div class="lbl">Elemento extra por vuelo remoto<br>(pasillera en cobús)</div></div>
+  </div>
+  <div class="value reveal"><span class="h">Carga real</span><b>552 elementos-turno adicionales</b> demandados solo por posiciones remotas en el trimestre — carga operativa medible que refuerza el dimensionamiento de guardias.</div>
+  <div class="foot"><span>Posiciones remotas · carga adicional</span><span>08</span></div>
+</section>
+
+<!-- 5 MOSTRADOR (SALIDAS) -->
+<section class="slide" id="s5">
+  <span class="tag medible reveal">Pilar · Medible + Humano</span>
+  <div class="feat">
+    <div class="reveal">
+      <h2>Mostrador en cada bahía</h2>
+      <p class="sub">Un <b>mostrador dedicado por bahía en salidas</b> ordena la solicitud de servicio del pasajero: registro, control de fila y atención en un solo punto.</p>
+      <ul class="pts">
+        <li>Punto único de recepción en salidas → menos pasajeros perdidos.</li>
+        <li>Registro inmediato del servicio y del pasajero al llegar al mostrador.</li>
+        <li>Atención más ágil y ordenada antes del vuelo.</li>
+      </ul>
+      <div class="value"><span class="h">Beneficio Aeroméxico</span><b>Reducción sostenida del no-show en salidas y una atención más rápida y ordenada</b> desde el primer contacto con el pasajero.</div>
+      <p class="sub" style="font-size:.85rem;margin-top:1rem">Cifras de <b>no-show en salidas</b> (cohortes con/sin mostrador, mismo periodo). Distinto del <b>14.5% global</b> de la lámina 03, que incluye salidas y llegadas.</p>
+    </div>
+    <div class="grid reveal" style="grid-template-columns:1fr 1fr;margin-top:0">
+      <div class="card"><div class="num" style="color:var(--navy)">11.7%</div><div class="lbl">No-show en salidas <b>sin mostrador</b></div></div>
+      <div class="card accent"><div class="num">4.2%</div><div class="lbl">No-show en salidas atendidas <b>con mostrador</b></div></div>
+      <div class="card greenc"><div class="num">−64%</div><div class="lbl">Reducción relativa del no-show con mostrador</div></div>
+      <div class="card"><div class="num" style="color:var(--coral)">1×bahía</div><div class="lbl">Mostrador dedicado por posición</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Mostrador por bahía · salidas</span><span>09</span></div>
+</section>
+
+<!-- 6 MANTENIMIENTO -->
+<section class="slide" id="s6">
+  <span class="tag seguro reveal">Pilar · Seguro</span>
+  <div class="feat">
+    <div class="reveal">
+      <h2>Control de Mantenimiento y Refacciones</h2>
+      <p class="sub">Nuevo sistema para gestionar el mantenimiento y las refacciones de <b>sillas de ruedas</b> y <b>dispositivos Handheld</b>, con historial por equipo.</p>
+      <ul class="pts">
+        <li>Cada equipo con expediente: estado, refacción usada, técnico y fecha.</li>
+        <li>Evidencia fotográfica antes/después de cada intervención.</li>
+        <li>Control de inventario de refacciones con stock mínimo y alertas.</li>
+      </ul>
+      <div class="value"><span class="h">Beneficio Aeroméxico</span><b>Menos fallas en piso, equipos confiables para el pasajero, vida útil extendida y evidencia auditable</b> de cada intervención.</div>
+    </div>
+    <div class="grid reveal" style="grid-template-columns:1fr 1fr;margin-top:0">
+      <div class="card"><div class="num" style="color:var(--coral)">281</div><div class="lbl">Mantenimientos registrados</div></div>
+      <div class="card"><div class="num" style="color:var(--navy)">182</div><div class="lbl">Equipos en catálogo</div></div>
+      <div class="card"><div class="num" style="color:var(--teal)">27</div><div class="lbl">Refacciones controladas</div></div>
+      <div class="card"><div class="num" style="color:var(--navy)">305</div><div class="lbl">Movimientos de inventario</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Control de Mantenimiento</span><span>10</span></div>
+</section>
+
+<!-- 7 ESTACIONES CONECTADAS -->
+<section class="slide" id="s7">
+  <span class="tag tec reveal">Pilar · Tecnológico</span>
+  <div class="feat" style="grid-template-columns:.8fr 1.2fr">
+    <div class="reveal">
+      <h2>Red Nacional Conectada</h2>
+      <p class="sub">Las <b>5 estaciones</b> comparten la información de cada servicio en tiempo real. Un pasajero que viaja de una estación a otra conserva el <b>mismo expediente</b>, asegurando un <b>servicio completo de punta a punta</b>.</p>
+      <ul class="pts">
+        <li>Expediente único: origen, conexión y destino ven el mismo servicio.</li>
+        <li>El expediente incluye <b>avisos sobre pasajeros de difícil manejo</b> antes de que lleguen a la siguiente estación.</li>
+        <li>El servicio de silla se entrega sin cortes entre estaciones.</li>
+        <li>Cobertura nacional: MEX · GDL · CUN · MTY · PVR.</li>
+      </ul>
+      <div class="value"><span class="h">Beneficio Aeroméxico</span><b>Continuidad garantizada del servicio en vuelos con conexión</b> — ninguna estación pierde el hilo del pasajero.</div>
+    </div>
+    <div class="reveal" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.6rem">
+      <svg viewBox="0 0 440 312" width="100%" style="max-width:660px" font-family="-apple-system,Segoe UI,Roboto,sans-serif" xmlns="http://www.w3.org/2000/svg">
+        <path d="M283.7 118.7 L278.6 131.3 L276.3 141.7 L275.3 161.0 L274.1 168.0 L276.4 175.9 L280.4 182.9 L283.1 194.1 L291.8 204.8 L294.9 213.0 L300.1 220.1 L314.1 223.9 L319.5 229.9 L331.1 225.9 L341.2 224.5 L351.1 221.9 L359.4 219.4 L367.8 213.5 L370.9 205.1 L372.0 193.0 L374.3 188.8 L383.2 185.0 L397.1 181.7 L408.8 182.2 L416.8 181.0 L420.0 184.0 L419.6 191.0 L412.5 199.5 L409.3 208.3 L411.8 210.8 L409.8 217.0 L406.5 228.3 L403.1 224.6 L400.4 224.8 L397.9 225.0 L393.1 233.7 L390.7 232.0 L389.1 232.7 L389.2 234.8 L377.0 234.6 L364.7 234.6 L364.7 242.7 L358.8 242.8 L363.7 247.6 L368.5 250.9 L370.0 254.0 L372.1 254.9 L371.8 259.8 L354.9 259.9 L348.5 271.6 L350.4 274.3 L348.9 277.7 L348.5 281.9 L333.6 266.4 L326.8 261.7 L316.0 257.9 L308.7 259.0 L298.1 264.4 L291.4 265.8 L282.1 262.0 L272.2 259.3 L259.9 252.7 L250.0 250.6 L235.0 243.9 L224.0 237.1 L220.7 233.2 L213.3 232.4 L199.8 227.8 L194.3 221.2 L180.1 213.1 L173.5 204.0 L170.4 197.0 L174.8 195.5 L173.4 191.4 L176.4 187.7 L176.5 182.7 L172.1 176.3 L170.9 170.5 L166.4 163.3 L154.8 148.9 L141.6 137.7 L135.1 128.7 L123.8 122.8 L121.4 119.3 L123.4 110.4 L116.7 107.1 L108.9 100.1 L105.6 90.0 L98.5 88.8 L90.8 81.2 L84.6 74.2 L84.1 69.7 L77.0 58.9 L72.3 47.9 L72.5 42.3 L63.0 36.6 L58.6 37.2 L51.0 33.3 L48.9 39.1 L51.1 46.0 L52.4 56.8 L56.9 62.8 L66.7 72.7 L68.9 76.1 L70.9 77.1 L72.6 82.1 L75.0 81.9 L77.6 91.2 L81.6 94.8 L84.4 99.9 L92.7 107.2 L97.1 120.6 L101.0 127.0 L104.7 133.7 L105.4 141.3 L111.8 141.8 L117.1 148.3 L121.8 154.7 L121.5 157.3 L116.0 162.6 L113.6 162.5 L110.2 153.8 L101.5 145.6 L92.0 138.6 L85.3 135.0 L85.7 124.4 L83.7 116.6 L77.4 112.2 L68.3 105.7 L66.6 107.6 L63.3 103.8 L55.1 100.3 L47.3 92.0 L48.3 90.9 L53.7 91.7 L58.6 86.3 L59.1 79.8 L49.0 69.6 L41.2 65.6 L36.4 56.6 L31.5 47.1 L25.4 35.6 L20.0 22.7 L35.0 21.6 L51.8 20.0 L50.5 22.8 L70.4 29.8 L100.5 40.0 L126.8 39.9 L137.2 39.9 L137.3 33.9 L160.1 33.9 L164.9 39.0 L171.7 43.6 L179.5 49.9 L183.9 57.4 L187.2 65.4 L194.0 69.7 L205.0 74.0 L213.3 62.6 L224.1 62.4 L233.4 68.1 L240.0 78.0 L244.5 86.4 L252.3 94.6 L255.2 104.7 L258.9 111.5 L269.2 115.9 L278.6 119.1 L283.7 118.7 Z" fill="#E7ECF4" stroke="#C6D0E2" stroke-width="1.5"/>
+        <g stroke="#00B2C4" stroke-width="2.4" class="mxflow" fill="none" opacity=".85">
+          <line x1="257.5" y1="211.4" x2="241.8" y2="121.3"/>
+          <line x1="257.5" y1="211.4" x2="201.8" y2="193.6"/>
+          <line x1="257.5" y1="211.4" x2="177.0" y2="194.3"/>
+          <line x1="257.5" y1="211.4" x2="419.5" y2="186.5"/>
+        </g>
+        <g>
+          <circle class="mxring" cx="241.8" cy="121.3" r="7" fill="#00B2C4"/>
+          <circle class="mxring" cx="201.8" cy="193.6" r="7" fill="#00B2C4" style="animation-delay:.5s"/>
+          <circle class="mxring" cx="177.0" cy="194.3" r="7" fill="#00B2C4" style="animation-delay:1s"/>
+          <circle class="mxring" cx="419.5" cy="186.5" r="7" fill="#00B2C4" style="animation-delay:1.5s"/>
+          <circle class="mxring" cx="257.5" cy="211.4" r="8" fill="#F0047F" style="animation-delay:.25s"/>
+        </g>
+        <g text-anchor="middle">
+          <circle cx="241.8" cy="121.3" r="6" fill="#122C57"/>
+          <text x="241.8" y="109" fill="#0A1E3F" font-size="12" font-weight="800">MTY</text>
+          <text class="cnt" data-target="2690" x="241.8" y="140" fill="#122C57" font-size="15">2,690</text>
+
+          <circle cx="419.5" cy="186.5" r="6" fill="#122C57"/>
+          <text x="415" y="172" fill="#0A1E3F" font-size="12" font-weight="800">CUN</text>
+          <text class="cnt" data-target="4130" x="415" y="204" fill="#122C57" font-size="15">4,130</text>
+
+          <circle cx="201.8" cy="193.6" r="6" fill="#122C57"/>
+          <text x="212" y="188" fill="#0A1E3F" font-size="12" font-weight="800">GDL</text>
+          <text class="cnt" data-target="16612" x="206" y="216" fill="#122C57" font-size="15">16,612</text>
+
+          <circle cx="177.0" cy="194.3" r="6" fill="#122C57"/>
+          <text x="156" y="184" fill="#0A1E3F" font-size="12" font-weight="800">PVR</text>
+          <text class="cnt" data-target="1445" x="138" y="207" fill="#122C57" font-size="15">1,445</text>
+
+          <circle cx="257.5" cy="211.4" r="8" fill="#F0047F"/>
+          <text x="257.5" y="230" fill="#F0047F" font-size="12.5" font-weight="800">MEX</text>
+          <text class="cnt" data-target="119681" x="263" y="253" fill="#F0047F" font-size="18">119,681</text>
+        </g>
+      </svg>
+      <p class="mapcap"><b class="cnt" data-target="144558">144,558</b> servicios AM en la red nacional · jul–sep 2026</p>
+    </div>
+  </div>
+  <div class="foot"><span>Red Nacional · Estaciones conectadas</span><span>11</span></div>
+</section>
+
+<!-- 9 INTEGRACION TRANSFORMACION DIGITAL -->
+<section class="slide" id="s9">
+  <span class="tag tec reveal">En colaboración · Transformación Digital AM</span>
+  <div class="reveal">
+    <h2>Integración directa con Aeroméxico</h2>
+    <p class="sub">De forma proactiva desarrollamos, junto al equipo de <b>Transformación Digital de Aeroméxico</b>, una instancia en nuestro software para que la solicitud del pasajero llegue <b>automáticamente</b> a nuestra coordinación y planeación.</p>
+  </div>
+  <div class="flow reveal">
+    <div class="node"><b>Kiosko / Web / App</b><p>El pasajero solicita el servicio o hace su reserva.</p></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Notificación automática</b><p>La instancia envía el aviso a nuestra coordinación en tiempo real.</p></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Planeación Orión</b><p>El servicio queda incluido en la planeación desde el origen.</p></div>
+  </div>
+  <div class="reveal">
+    <div class="value"><span class="h">Beneficio Aeroméxico</span><b>El servicio se planea desde que el pasajero lo solicita</b> — sin capturas manuales, sin pérdidas, con la reserva integrada de punta a punta.</div>
+    <span class="badge reveal">Instancia desarrollada y probada de nuestro lado · en espera de la respuesta de su equipo</span>
+  </div>
+  <div class="foot"><span>Integración · Transformación Digital</span><span>12</span></div>
+</section>
+
+<!-- 10 ACCESOS / DEMO -->
+<section class="slide" id="s10">
+  <div class="kicker reveal">Ecosistema tecnológico · Demo en vivo</div>
+  <h2 class="reveal">Dos plataformas, un control total</h2>
+  <p class="sub reveal">Durante la reunión mostramos ambos sistemas operando con datos reales de Aeroméxico.</p>
+  <div class="access reveal">
+    <div class="card">
+      <b>Mintaka — Coordinación de Sillas</b>
+      <div class="mut">Gestión de servicios, guardias y operación en piso.</div>
+      <p style="margin-top:.8rem"><a href="https://estaciones.orionadministracion.com/">estaciones.orionadministracion.com</a></p>
+    </div>
+    <div class="card">
+      <b>Mantenimiento — Control de Equipos</b>
+      <div class="mut">Sillas de ruedas y dispositivos Handheld, refacciones e inventario.</div>
+      <p style="margin-top:.8rem"><a href="https://mantenimiento.orionadministracion.com/">mantenimiento.orionadministracion.com</a></p>
+    </div>
+  </div>
+  <div class="foot"><span>Demo en vivo</span><span>13</span></div>
+</section>
+
+<!-- 10B SOLICITUDES / APOYO -->
+<section class="slide" id="s10b">
+  <span class="tag medible reveal">Para seguir mejorando</span>
+  <h2 class="reveal">Con el fin de mejorar cada vez nuestro servicio</h2>
+  <p class="sub reveal">Sería importante contar con la siguiente información y apoyo del equipo de Aeroméxico:</p>
+  <div class="grid reveal" style="margin-top:2.4rem">
+    <div class="card navyc"><div class="num" style="font-size:1.5rem">Sala del vuelo</div><div class="lbl">Compartir de nuevo la sala asignada al vuelo — antes se compartía y en las actualizaciones se perdió. Con ese dato identificamos las posiciones remotas de manera certera.</div></div>
+    <div class="card tealc"><div class="num" style="font-size:1.5rem">Cobús</div><div class="lbl">Mejor comunicación con el equipo de cobús para coordinar el traslado del pasajero a la aeronave sin demoras.</div></div>
+    <div class="card accent"><div class="num" style="font-size:1.5rem">+1 pasillera</div><div class="lbl">Considerar una persona más para ejecutar los servicios en posiciones remotas ("pasilleras").</div></div>
+  </div>
+  <div class="foot"><span>Solicitudes de apoyo · Aeroméxico</span><span>14</span></div>
+</section>
+
+<!-- 11 CIERRE -->
+<section class="slide cta" id="s11">
+  <div class="brandrow reveal">ORIÓN <span class="x">×</span> AEROMÉXICO</div>
+  <h2 class="reveal">Seguimos construyendo el servicio más<br>seguro, humano, medible y tecnológico</h2>
+  <p class="sub reveal">Cuatro implementaciones nuevas en producción, respaldadas por más de 100,000 servicios atendidos este trimestre. Gracias.</p>
+  <div class="foot"><span>Grupo Orión · Septiembre 2026</span><span>15</span></div>
+</section>
+
+<!-- 12 ANEXO · METODOLOGIA NO-SHOW -->
+<section class="slide anexo" id="s12">
+  <span class="tag medible reveal">Anexo · Metodología</span>
+  <div class="feat">
+    <div class="reveal">
+      <h2>Cómo medimos el no-show</h2>
+      <p class="sub">Definición detrás de las cifras del <b>Slide 09</b>, para trazabilidad y auditoría.</p>
+      <ul class="pts">
+        <li><b>No-show</b> = pasajero con servicio de silla solicitado que no se presenta a su vuelo.</li>
+        <li><b>Fórmula:</b> No-show % = servicios no presentados ÷ servicios gestionados.</li>
+        <li><b>Dos cohortes, mismo periodo:</b> salidas <b>con</b> mostrador dedicado vs. salidas <b>sin</b> mostrador.</li>
+        <li>Cada servicio es <b>trazable individualmente</b> en Mintaka (folio, pasajero, vuelo, estatus).</li>
+      </ul>
+    </div>
+    <div class="grid reveal" style="grid-template-columns:1fr 1fr;margin-top:0">
+      <div class="card"><div class="num" style="color:var(--navy)">11.7%</div><div class="lbl">Sin mostrador<br>no-show en salidas</div></div>
+      <div class="card accent"><div class="num">4.2%</div><div class="lbl">Con mostrador<br>no-show en salidas</div></div>
+      <div class="card greenc"><div class="num">−64%</div><div class="lbl">Reducción relativa<br>(11.7 − 4.2) ÷ 11.7</div></div>
+      <div class="card"><div class="num" style="color:var(--coral)">1:1</div><div class="lbl">Definición y periodo<br>idénticos entre cohortes</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Anexo · Metodología del no-show</span><span>Anexo</span></div>
+</section>
+
+<!-- 13 ANEXO · DIMENSIONAMIENTO GUARDIAS -->
+<section class="slide anexo" id="s13">
+  <span class="tag medible reveal">Anexo · Metodología</span>
+  <div class="feat">
+    <div class="reveal">
+      <h2>Cómo dimensionamos la guardia (+45)</h2>
+      <p class="sub">Sustento del refuerzo propuesto en el <b>Slide 07</b>, con datos operativos trazables.</p>
+      <ul class="pts">
+        <li><b>Demanda simultánea:</b> sillas de llegada agrupadas por franja de 30 min según la <b>hora real de vuelo</b>.</li>
+        <li><b>Capacidad de respuesta:</b> operadores distintos que inician servicio en cada franja del pico (15–20).</li>
+        <li><b>Brecha medida:</b> en el pico de 15:00 se solicitan ~40 sillas y arrancan ~17 → faltan ~23 manos simultáneas.</li>
+        <li><b>No es plantilla de base</b> — la operación cubre bien el resto del día; el déficit es de <b>simultaneidad</b> en los bancos de llegada.</li>
+      </ul>
+    </div>
+    <div class="grid reveal" style="grid-template-columns:1fr 1fr;margin-top:0">
+      <div class="card"><div class="num" style="color:var(--navy)">65%</div><div class="lbl">De la operación<br>son llegadas</div></div>
+      <div class="card navyc"><div class="num">40–63</div><div class="lbl">Sillas por franja<br>en los picos de tarde</div></div>
+      <div class="card"><div class="num" style="color:var(--coral)">~17</div><div class="lbl">Servicios que arrancan<br>en el pico de 15:00</div></div>
+      <div class="card accent"><div class="num">+45</div><div class="lbl">Guardia de refuerzo<br>franja de tiempo 11:00–16:00</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Anexo · Dimensionamiento de guardias</span><span>Anexo</span></div>
+</section>
+
+</div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const navSlides=[...document.querySelectorAll('.slide:not(.anexo)')];
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.25});
+  slides.forEach(s=>io.observe(s));
+  const prog=document.getElementById('prog');
+  addEventListener('scroll',()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;prog.style.width=p+'%';});
+  const nav=document.getElementById('nav');
+  navSlides.forEach((s)=>{const a=document.createElement('a');a.href='#'+s.id;nav.appendChild(a);});
+  const dots=[...nav.children];
+  const io2=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){const i=navSlides.indexOf(e.target);dots.forEach(d=>d.classList.remove('on'));dots[i]&&dots[i].classList.add('on');}}),{threshold:.5});
+  navSlides.forEach(s=>io2.observe(s));
+  // current slide by scroll position
+  function current(){let idx=0,best=1e9;navSlides.forEach((s,i)=>{const d=Math.abs(s.getBoundingClientRect().top);if(d<best){best=d;idx=i;}});return idx;}
+  function go(i){i=Math.max(0,Math.min(navSlides.length-1,i));navSlides[i].scrollIntoView({behavior:'smooth'});}
+  // anexos ocultos: abrir bajo demanda (link o tecla A)
+  const anexlink=document.getElementById('anexlink');
+  if(anexlink)anexlink.addEventListener('click',(e)=>{e.preventDefault();document.body.classList.add('show-anexos');const t=document.getElementById('s12');if(t)t.scrollIntoView({behavior:'smooth'});});
+  addEventListener('keydown',(e)=>{if((e.key==='a'||e.key==='A')&&!e.metaKey&&!e.ctrlKey){document.body.classList.toggle('show-anexos');}});
+  // click to advance (ignore links)
+  addEventListener('click',(e)=>{if(e.target.closest('a'))return;go(current()+1);});
+  // keyboard
+  addEventListener('keydown',(e)=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(current()+1);}
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(current()-1);}
+  });
+  // hide hint after first interaction
+  const hint=document.getElementById('hint');
+  const hide=()=>{hint.style.opacity='0';setTimeout(()=>hint.remove(),700);removeEventListener('click',hide);removeEventListener('scroll',hide);};
+  addEventListener('click',hide);addEventListener('scroll',hide);
+  setTimeout(hide,6000);
+  // count-up de servicios AM por estación (slide 7)
+  const fmtN=n=>n.toLocaleString('es-MX');
+  const counters=[...document.querySelectorAll('#s7 .cnt')];
+  const isPrint=matchMedia('print').matches;
+  if(!isPrint)counters.forEach(el=>el.textContent='0');
+  function countUp(el,target,dur){
+    const t0=performance.now();
+    (function tick(now){
+      let p=Math.min(1,(now-t0)/dur);p=1-Math.pow(1-p,3);
+      el.textContent=fmtN(Math.round(target*p));
+      if(p<1)requestAnimationFrame(tick);else el.textContent=fmtN(target);
+    })(t0);
+  }
+  let counted=false;
+  const s7=document.getElementById('s7');
+  if(s7){new IntersectionObserver((es)=>es.forEach(e=>{
+    if(e.isIntersecting&&!counted){counted=true;
+      counters.forEach((el,i)=>setTimeout(()=>countUp(el,+el.dataset.target,1700),i*180));
+    }
+  }),{threshold:.35}).observe(s7);}
+  addEventListener('beforeprint',()=>counters.forEach(el=>el.textContent=fmtN(+el.dataset.target)));
+</script>
+</body>
+</html>
