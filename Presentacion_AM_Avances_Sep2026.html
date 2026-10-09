@@ -266,43 +266,70 @@
 <section class="slide" id="s5t">
   <span class="tag medible reveal">Pilar · Medible</span>
   <h2 class="reveal">Tiempo de respuesta — Asignado → Iniciado</h2>
-  <p class="sub reveal">Del momento en que el coordinador asigna el servicio hasta que el operador lo inicia. <b>67,549 servicios AM analizados</b> · MEXT1 + MEXT2 · jul–sep 2026.</p>
-  <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.2rem;align-items:start">
+  <p class="sub reveal">Del momento en que el coordinador asigna el servicio hasta que el operador lo inicia. <b>67,549 servicios AM</b> · MEXT1 + MEXT2 · comparativo trimestral.</p>
+
+  <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:1.6rem">
+
     <!-- LLEGADAS -->
     <div>
-      <span style="background:#FDE7F1;color:var(--coral);font-weight:800;font-size:.8rem;padding:.3rem .85rem;border-radius:999px;letter-spacing:.06em;display:inline-block;margin-bottom:.7rem">LLEGADAS · 41,630</span>
-      <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:0;gap:.5rem">
-        <div class="card accent" style="padding:.9rem"><div class="num" style="font-size:2rem">27.6</div><div class="lbl">min mediana</div></div>
-        <div class="card" style="padding:.9rem"><div class="num" style="color:var(--coral);font-size:2rem">43%</div><div class="lbl">tarda &gt; 30 min</div></div>
+      <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem">
+        <span style="background:#FDE7F1;color:var(--coral);font-weight:800;font-size:.8rem;padding:.3rem .9rem;border-radius:999px;letter-spacing:.06em">LLEGADAS</span>
+        <span style="color:var(--mut);font-size:.85rem;font-weight:600">41,630 servicios · jul–sep</span>
       </div>
-      <div class="bars" style="height:140px;margin-top:1.8rem;padding-bottom:1.5rem;gap:.4rem">
-        <div class="bar"><div class="fill" style="--h:15%;background:linear-gradient(180deg,var(--coral),#C70468)"><span class="v" style="font-size:.7rem;color:var(--coral)">7%</span><span class="x" style="font-size:.65rem">0-5m</span></div></div>
-        <div class="bar"><div class="fill" style="--h:10%;background:linear-gradient(180deg,var(--coral),#C70468)"><span class="v" style="font-size:.7rem;color:var(--coral)">5%</span><span class="x" style="font-size:.65rem">5-10</span></div></div>
-        <div class="bar"><div class="fill" style="--h:15%;background:linear-gradient(180deg,var(--coral),#C70468)"><span class="v" style="font-size:.7rem;color:var(--coral)">7%</span><span class="x" style="font-size:.65rem">10-15</span></div></div>
-        <div class="bar"><div class="fill" style="--h:22%;background:linear-gradient(180deg,var(--coral),#C70468)"><span class="v" style="font-size:.7rem;color:var(--coral)">10%</span><span class="x" style="font-size:.65rem">15-20</span></div></div>
-        <div class="bar"><div class="fill" style="--h:56%;background:linear-gradient(180deg,var(--coral),#C70468)"><span class="v" style="font-size:.7rem;color:var(--coral)">27%</span><span class="x" style="font-size:.65rem">20-30</span></div></div>
-        <div class="bar"><div class="fill" style="--h:90%;background:linear-gradient(180deg,var(--coral),#C70468)"><span class="v" style="font-size:.7rem;color:var(--coral)">43%</span><span class="x" style="font-size:.65rem">30+m</span></div></div>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:0;gap:.7rem">
+        <div class="card accent" style="padding:1rem 1.1rem">
+          <div class="num" style="font-size:2.2rem">27.6</div>
+          <div class="lbl">min mediana</div>
+          <div style="margin-top:.6rem;font-size:.8rem;color:#FCE0EE;font-weight:700">vs 26.2 trim ant.</div>
+          <div style="font-size:1rem;font-weight:800;color:#FFB3D4">↑ +1.4 min</div>
+        </div>
+        <div class="card" style="padding:1rem 1.1rem">
+          <div class="num" style="color:var(--coral);font-size:2.2rem">43%</div>
+          <div class="lbl">tarda &gt; 30 min</div>
+          <div style="margin-top:.6rem;font-size:.8rem;color:var(--mut);font-weight:700">vs 39% trim ant.</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--coral)">↑ +4 pp</div>
+        </div>
+        <div class="card" style="padding:1rem 1.1rem">
+          <div class="num" style="color:var(--navy);font-size:2.2rem">19%</div>
+          <div class="lbl">atiende &lt; 15 min</div>
+          <div style="margin-top:.6rem;font-size:.8rem;color:var(--mut);font-weight:700">sin cambio relevante</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--mut)">— estable</div>
+        </div>
       </div>
     </div>
+
     <!-- SALIDAS -->
     <div>
-      <span style="background:#E6F7F9;color:#008A99;font-weight:800;font-size:.8rem;padding:.3rem .85rem;border-radius:999px;letter-spacing:.06em;display:inline-block;margin-bottom:.7rem">SALIDAS · 25,919</span>
-      <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:0;gap:.5rem">
-        <div class="card tealc" style="padding:.9rem"><div class="num" style="font-size:2rem">1.2</div><div class="lbl">min mediana</div></div>
-        <div class="card greenc" style="padding:.9rem"><div class="num" style="font-size:2rem">74%</div><div class="lbl">atiende &lt; 5 min</div></div>
+      <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem">
+        <span style="background:#E6F7F9;color:#008A99;font-weight:800;font-size:.8rem;padding:.3rem .9rem;border-radius:999px;letter-spacing:.06em">SALIDAS</span>
+        <span style="color:var(--mut);font-size:.85rem;font-weight:600">25,919 servicios · jul–sep</span>
       </div>
-      <div class="bars" style="height:140px;margin-top:1.8rem;padding-bottom:1.5rem;gap:.4rem">
-        <div class="bar"><div class="fill" style="--h:90%"><span class="v" style="font-size:.7rem">74%</span><span class="x" style="font-size:.65rem">0-5m</span></div></div>
-        <div class="bar"><div class="fill" style="--h:5%"><span class="v" style="font-size:.7rem">4%</span><span class="x" style="font-size:.65rem">5-10</span></div></div>
-        <div class="bar"><div class="fill" style="--h:5%"><span class="v" style="font-size:.7rem">4%</span><span class="x" style="font-size:.65rem">10-15</span></div></div>
-        <div class="bar"><div class="fill" style="--h:4%"><span class="v" style="font-size:.7rem">3%</span><span class="x" style="font-size:.65rem">15-20</span></div></div>
-        <div class="bar"><div class="fill" style="--h:5%"><span class="v" style="font-size:.7rem">4%</span><span class="x" style="font-size:.65rem">20-30</span></div></div>
-        <div class="bar"><div class="fill" style="--h:14%"><span class="v" style="font-size:.7rem">11%</span><span class="x" style="font-size:.65rem">30+m</span></div></div>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:0;gap:.7rem">
+        <div class="card tealc" style="padding:1rem 1.1rem">
+          <div class="num" style="font-size:2.2rem">1.2</div>
+          <div class="lbl">min mediana</div>
+          <div style="margin-top:.6rem;font-size:.8rem;color:#DDF6F9;font-weight:700">vs 2.2 trim ant.</div>
+          <div style="font-size:1rem;font-weight:800;color:#AAEEF5">↓ −45%</div>
+        </div>
+        <div class="card greenc" style="padding:1rem 1.1rem">
+          <div class="num" style="font-size:2.2rem">74%</div>
+          <div class="lbl">atiende &lt; 5 min</div>
+          <div style="margin-top:.6rem;font-size:.8rem;color:#DCF5E5;font-weight:700">vs 64% trim ant.</div>
+          <div style="font-size:1rem;font-weight:800;color:#A8EFC4">↑ +10 pp</div>
+        </div>
+        <div class="card navyc" style="padding:1rem 1.1rem">
+          <div class="num" style="font-size:2.2rem">82%</div>
+          <div class="lbl">atiende &lt; 15 min</div>
+          <div style="margin-top:.6rem;font-size:.8rem;color:#C3D1EA;font-weight:700">vs 72% trim ant.</div>
+          <div style="font-size:1rem;font-weight:800;color:#A0B8E0">↑ +10 pp</div>
+        </div>
       </div>
     </div>
+
   </div>
-  <div class="value reveal" style="margin-top:.8rem;padding:.85rem 1.3rem">
-    <span class="h">¿Por qué la diferencia?</span>Las <b>salidas</b> se pre-registran en el mostrador — el operador ya espera al pax. Las <b>llegadas</b> arriban en <b>bancos simultáneos</b>, 52.5% como última hora sin aviso previo, y el operador se traslada desde otra posición. La brecha no es falta de personal: es la <b>estructura impredecible de la demanda</b>.
+
+  <div class="value reveal" style="margin-top:1.3rem;padding:.9rem 1.4rem">
+    <span class="h">Lectura del comparativo</span>El <b>mostrador en salidas</b> redujo la mediana de respuesta a la mitad (2.2 → 1.2 min) y llevó el 74% de los servicios a menos de 5 minutos. Las <b>llegadas</b> siguen sin cambio estructural: más volumen y más UH elevan levemente el tiempo — argumento directo para la <b>guardia de refuerzo</b>.
   </div>
   <div class="foot"><span>Tiempos de atención · Asignado → Iniciado</span><span>08</span></div>
 </section>
