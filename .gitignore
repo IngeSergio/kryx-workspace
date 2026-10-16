@@ -14,3 +14,24 @@ dreams/
 
 # Logs
 *.log
+
+# Local dev credentials (never commit)
+policies/*_creds.md
+policies/*.secret
+
+# Documents / reports (operational files, not source)
+*.pdf
+*.xlsx
+*.xls
+*.xltx
+*.csv
+*.pptx
+*.ppt
+*.html
+*.htm
+*.docx
+*.doc
+*.md5
+
+# Public presentations (exceptions to HTML rule)
+!Mintaka_Pitch_Seguridad.html

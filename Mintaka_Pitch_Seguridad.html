@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintaka — Control de Asistencia Especial en Aeropuertos</title>
+<style>
+  :root{
+    --navy:#060F1F; --navy2:#0D1E3A; --accent:#00D4FF; --gold:#F59E0B;
+    --green:#10B981; --red:#EF4444; --muted:#4A6080; --bg:#080E1C;
+    --card:#0D1E3A; --line:#1A2E4A; --white:#F0F6FF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased}
+  .deck{scroll-snap-type:y proximity}
+  .slide{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:7vh 9vw;position:relative;scroll-snap-align:start;border-bottom:1px solid var(--line);overflow:hidden}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .slide.in .reveal{opacity:1;transform:none}
+  .slide.in .reveal:nth-child(2){transition-delay:.08s}
+  .slide.in .reveal:nth-child(3){transition-delay:.16s}
+  .slide.in .reveal:nth-child(4){transition-delay:.24s}
+  .slide.in .reveal:nth-child(5){transition-delay:.32s}
+  .slide.in .reveal:nth-child(6){transition-delay:.40s}
+  .slide.in .reveal:nth-child(7){transition-delay:.48s}
+
+  /* TYPOGRAPHY */
+  h1{font-size:clamp(2.4rem,5.5vw,4.2rem);line-height:1.04;font-weight:800;letter-spacing:-.03em}
+  h2{font-size:clamp(1.7rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem}
+  .sub{font-size:clamp(1rem,1.6vw,1.3rem);color:#8AAFC8;font-weight:500;max-width:58ch;margin-top:1rem;line-height:1.55}
+  .kicker{font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.32rem .75rem;border-radius:999px;margin-bottom:1.2rem}
+  .tag.sec{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.3)}
+  .tag.ops{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.3)}
+  .tag.data{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
+  .tag.cta{background:rgba(0,212,255,.15);color:var(--accent);border:1px solid rgba(0,212,255,.4)}
+
+  /* HERO */
+  .hero{background:radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,212,255,.12), transparent 60%),
+        radial-gradient(ellipse 50% 80% at 20% 80%, rgba(16,185,129,.08), transparent 60%),
+        linear-gradient(160deg,#040A16,#060F1F 50%,#0A1A30)}
+  .hero:after{content:"";position:absolute;width:55vw;height:55vw;right:-15vw;top:-15vw;
+    background:radial-gradient(circle,rgba(0,212,255,.07),transparent 65%);border-radius:50%;
+    animation:float 14s ease-in-out infinite}
+  .scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.4),transparent);
+    animation:scan 4s ease-in-out infinite;opacity:0}
+  .slide.in .scanline{opacity:1}
+  @keyframes scan{0%{top:15%}100%{top:90%}}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(-2vw,2vw)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  .logo-wrap{display:flex;align-items:center;gap:1rem;margin-bottom:2.8rem}
+  .logo-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#00D4FF,#0090A8);
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 0 32px rgba(0,212,255,.35)}
+  .logo-text{font-size:1.4rem;font-weight:800;letter-spacing:.04em}
+  .logo-text span{color:var(--accent)}
+  .badge-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2.5rem}
+  .badge-row .b{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    color:#A8C4DC;padding:.45rem 1rem;border-radius:999px;font-size:.82rem;font-weight:600;
+    display:flex;align-items:center;gap:.4rem}
+  .badge-row .b .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .badge-row .b .dot.g{background:var(--green)}
+  .badge-row .b .dot.y{background:var(--gold)}
+
+  /* CARDS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.2rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.5rem;
+    box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .card .num{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.02em;line-height:1}
+  .card .lbl{color:#5A7A96;font-size:.9rem;margin-top:.5rem;font-weight:600;line-height:1.4}
+  .card.ac{background:linear-gradient(135deg,#004D5E,#006678);border:1px solid rgba(0,212,255,.3);box-shadow:0 8px 32px rgba(0,212,255,.12)}
+  .card.gc{background:linear-gradient(135deg,#054330,#075C40);border:1px solid rgba(16,185,129,.3);box-shadow:0 8px 32px rgba(16,185,129,.12)}
+  .card.yc{background:linear-gradient(135deg,#4A2E00,#6B4300);border:1px solid rgba(245,158,11,.3);box-shadow:0 8px 32px rgba(245,158,11,.12)}
+  .card.rc{background:linear-gradient(135deg,#4A0808,#6B0A0A);border:1px solid rgba(239,68,68,.3)}
+
+  /* FLOW */
+  .flow{display:flex;align-items:stretch;gap:.7rem;margin-top:2rem;flex-wrap:wrap}
+  .fnode{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:1.2rem 1rem;position:relative}
+  .fnode .fn-num{position:absolute;top:-12px;left:16px;background:var(--accent);color:#060F1F;
+    font-weight:800;font-size:.75rem;padding:.2rem .5rem;border-radius:999px}
+  .fnode .fn-icon{font-size:1.8rem;margin-bottom:.5rem}
+  .fnode b{display:block;color:var(--white);font-size:.95rem;margin-bottom:.25rem}
+  .fnode p{color:var(--muted);font-size:.82rem;line-height:1.4}
+  .farrow{display:flex;align-items:center;color:rgba(0,212,255,.5);font-size:1.2rem;flex-shrink:0}
+  @media(max-width:820px){.flow{flex-direction:column}.farrow{transform:rotate(90deg);justify-content:center}}
+
+  /* TIMELINE / LIST */
+  .tlist{margin-top:1.8rem;display:flex;flex-direction:column;gap:.5rem}
+  .titem{display:grid;grid-template-columns:44px 1fr;gap:1rem;align-items:start;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.2rem}
+  .titem .ti-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+  .titem.ac .ti-icon{background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.25)}
+  .titem.gc .ti-icon{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25)}
+  .titem.yc .ti-icon{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25)}
+  .titem.rc .ti-icon{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25)}
+  .titem b{display:block;color:var(--white);font-size:1rem;margin-bottom:.2rem}
+  .titem p{color:#5A7A96;font-size:.9rem;line-height:1.45}
+
+  /* PROBLEM SLIDE */
+  .prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+  @media(max-width:700px){.prob-grid{grid-template-columns:1fr}}
+  .prob-before{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:18px;padding:1.4rem}
+  .prob-after{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:18px;padding:1.4rem}
+  .pb-label{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:1rem}
+  .prob-before .pb-label{color:var(--red)}
+  .prob-after .pb-label{color:var(--green)}
+  ul.plist{list-style:none}
+  ul.plist li{padding:.5rem 0 .5rem 1.4rem;position:relative;font-size:.95rem;color:#8AAFC8;line-height:1.45}
+  ul.plist li:before{content:"";position:absolute;left:0;top:.9rem;width:6px;height:6px;border-radius:50%}
+  .prob-before ul.plist li:before{background:var(--red)}
+  .prob-after ul.plist li:before{background:var(--green)}
+
+  /* NFC VISUAL */
+  .nfc-wrap{display:flex;align-items:center;gap:3rem;margin-top:2rem}
+  @media(max-width:820px){.nfc-wrap{flex-direction:column}}
+  .nfc-card{width:240px;height:150px;border-radius:18px;background:linear-gradient(135deg,#0A1E3A,#0D2E50);
+    border:1px solid rgba(0,212,255,.35);box-shadow:0 0 40px rgba(0,212,255,.2);
+    display:flex;flex-direction:column;justify-content:space-between;padding:1.2rem;flex-shrink:0;
+    position:relative;overflow:hidden}
+  .nfc-card:after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+    background:repeating-linear-gradient(90deg,rgba(0,212,255,.03) 0px,rgba(0,212,255,.03) 1px,transparent 1px,transparent 20px),
+               repeating-linear-gradient(0deg,rgba(0,212,255,.03) 0px,rgba(0,212,255,.03) 1px,transparent 1px,transparent 20px)}
+  .nfc-chip{width:32px;height:24px;background:linear-gradient(135deg,#C8A854,#E8C86A);border-radius:4px}
+  .nfc-number{font-family:monospace;font-size:.95rem;letter-spacing:.1em;color:var(--accent);opacity:.7}
+  .nfc-name{font-weight:700;font-size:.9rem}
+  .nfc-signal{position:absolute;top:1rem;right:1rem;font-size:1.3rem;opacity:.5;animation:pulse 2s infinite}
+  .nfc-list{flex:1}
+  .nfc-point{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem 0;border-top:1px solid var(--line)}
+  .nfc-point:first-child{border-top:none;padding-top:0}
+  .nfc-point .np-icon{font-size:1.2rem;flex-shrink:0}
+  .nfc-point b{display:block;color:var(--white);font-size:.92rem}
+  .nfc-point p{color:var(--muted);font-size:.82rem;line-height:1.35}
+
+  /* TRAZABILIDAD */
+  .trace-row{display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
+  .trace-box{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:1.2rem;position:relative;overflow:hidden}
+  .trace-box:after{content:"";position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+  .trace-box.ac:after{background:var(--accent)}
+  .trace-box.gc:after{background:var(--green)}
+  .trace-box.yc:after{background:var(--gold)}
+  .trace-box.rc:after{background:var(--red)}
+  .trace-box .tb-label{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:.5rem}
+  .trace-box.ac .tb-label{color:var(--accent)}
+  .trace-box.gc .tb-label{color:var(--green)}
+  .trace-box.yc .tb-label{color:var(--gold)}
+  .trace-box.rc .tb-label{color:var(--red)}
+  .trace-box .tb-val{font-size:1.4rem;font-weight:800;line-height:1.2}
+  .trace-box .tb-desc{color:var(--muted);font-size:.82rem;margin-top:.3rem;line-height:1.4}
+
+  /* NETWORK MAP */
+  .station-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1.8rem;max-width:560px}
+  @media(max-width:600px){.station-grid{grid-template-columns:repeat(2,1fr)}}
+  .stn{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem;
+    text-align:center;position:relative}
+  .stn .stn-code{font-size:1.3rem;font-weight:800;letter-spacing:.04em;color:var(--accent)}
+  .stn .stn-name{font-size:.75rem;color:var(--muted);margin-top:.15rem;font-weight:600}
+  .stn .stn-dot{width:8px;height:8px;border-radius:50%;background:var(--green);
+    position:absolute;top:.8rem;right:.8rem;animation:pulse 2s infinite}
+  .live-label{display:inline-flex;align-items:center;gap:.4rem;background:rgba(16,185,129,.1);
+    border:1px solid rgba(16,185,129,.3);border-radius:999px;padding:.3rem .7rem;
+    font-size:.75rem;font-weight:700;color:var(--green);margin-top:1.5rem}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+
+  /* CTA */
+  .cta{background:radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0,212,255,.1), transparent 65%),
+       linear-gradient(160deg,#040A16,#060F1F)}
+  .cta h2{color:var(--white)}
+  .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+  @media(max-width:700px){.cta-grid{grid-template-columns:1fr}}
+  .cta-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.3rem}
+  .cta-card .cc-label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:.4rem}
+  .cta-card .cc-val{font-size:1.05rem;font-weight:700;color:var(--white)}
+  .cta-card a{color:var(--accent);text-decoration:none;font-weight:700}
+
+  /* CURSOR / TERMINAL EFFECT */
+  .cursor{display:inline-block;width:2px;height:1.1em;background:var(--accent);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px}
+
+  /* NAV / PROGRESS */
+  .prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--green));z-index:99;transition:width .1s}
+  .nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
+  .nav a{width:8px;height:8px;border-radius:50%;background:#1A2E4A;transition:.3s}
+  .nav a.on{background:var(--accent);transform:scale(1.5)}
+  .foot{position:absolute;bottom:2.5vh;left:9vw;right:9vw;display:flex;justify-content:space-between;
+    color:#2A4060;font-size:.75rem;font-weight:600;letter-spacing:.04em}
+  .hint{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(0,212,255,.12);
+    border:1px solid rgba(0,212,255,.25);color:var(--accent);font-size:.78rem;font-weight:600;
+    padding:.45rem .9rem;border-radius:999px;z-index:60;transition:opacity .6s;backdrop-filter:blur(8px)}
+
+  @media print{.slide{min-height:auto;page-break-after:always;padding:5vh 6vw}.reveal{opacity:1;transform:none}.prog,.nav,.hint,.scanline{display:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<nav class="nav" id="nav"></nav>
+<div class="hint" id="hint">Scroll o click para avanzar</div>
+<div class="deck">
+
+<!-- 01 HERO -->
+<section class="slide hero" id="s1">
+  <div class="scanline"></div>
+  <div class="logo-wrap reveal">
+    <div class="logo-icon">♿</div>
+    <div class="logo-text">MINTA<span>KA</span></div>
+  </div>
+  <div class="kicker reveal">Sistema de control operativo · Asistencia especial aeroportuaria</div>
+  <h1 class="reveal">Trazabilidad total.<br>Cada servicio.<br>Cada operador.</h1>
+  <p class="sub reveal">Tecnología de identificación y gestión en tiempo real para el servicio de asistencia a pasajeros con movilidad reducida en terminales aéreas.</p>
+  <div class="badge-row reveal">
+    <div class="b"><span class="dot"></span>Identificación NFC</div>
+    <div class="b"><span class="dot g"></span>Operación en vivo</div>
+    <div class="b"><span class="dot y"></span>Auditoría completa</div>
+    <div class="b"><span class="dot"></span>Multi-aeropuerto</div>
+  </div>
+  <div class="foot">Mintaka · Orión Administración &nbsp;&nbsp; estaciones.orionadministracion.com</div>
+</section>
+
+<!-- 02 EL PROBLEMA -->
+<section class="slide" id="s2">
+  <div class="tag sec reveal">El contexto</div>
+  <h2 class="reveal">El servicio WCHC<br>es crítico y auditado</h2>
+  <p class="sub reveal">Las aerolíneas están obligadas a proveer asistencia a pasajeros con movilidad reducida. Sin control digital, la operación es opaca, ineficiente y vulnerable a auditorías.</p>
+  <div class="prob-grid reveal">
+    <div class="prob-before">
+      <div class="pb-label">Sin Mintaka</div>
+      <ul class="plist">
+        <li>Sin trazabilidad de quién atendió cada servicio</li>
+        <li>Operadores sin identificación verificable en turno</li>
+        <li>Tiempos de espera sin registro ni evidencia</li>
+        <li>Imposible auditar eficiencia por aerolínea</li>
+        <li>Asignaciones manuales y propensas a error</li>
+      </ul>
+    </div>
+    <div class="prob-after">
+      <div class="pb-label">Con Mintaka</div>
+      <ul class="plist">
+        <li>Registro digital de cada servicio con responsable</li>
+        <li>Operador identificado por pulsera NFC única</li>
+        <li>Timestamps automáticos: inicio, fin, duración</li>
+        <li>Dashboard por aerolínea, ruta y estación</li>
+        <li>Asignación optimizada por coordinador en tiempo real</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">02 / 09</div>
+</section>
+
+<!-- 03 CÓMO FUNCIONA -->
+<section class="slide" id="s3">
+  <div class="tag ops reveal">Flujo operativo</div>
+  <h2 class="reveal">Del pax a la bitácora<br>en segundos</h2>
+  <p class="sub reveal">Proceso digitalizado de extremo a extremo, sin papel, sin llamadas, sin ambigüedad.</p>
+  <div class="flow reveal">
+    <div class="fnode">
+      <div class="fn-num">01</div>
+      <div class="fn-icon">✈️</div>
+      <b>Vuelo registrado</b>
+      <p>La operación inicia con la aerolínea y vuelo capturados en el sistema.</p>
+    </div>
+    <div class="farrow">›</div>
+    <div class="fnode">
+      <div class="fn-num">02</div>
+      <div class="fn-icon">📋</div>
+      <b>Coordinador asigna</b>
+      <p>El panel web muestra la fila de servicios. El coordinador asigna al sillero disponible.</p>
+    </div>
+    <div class="farrow">›</div>
+    <div class="fnode">
+      <div class="fn-num">03</div>
+      <div class="fn-icon">🔵</div>
+      <b>NFC: operador verificado</b>
+      <p>El sillero se identifica con su pulsera NFC antes de iniciar el servicio.</p>
+    </div>
+    <div class="farrow">›</div>
+    <div class="fnode">
+      <div class="fn-num">04</div>
+      <div class="fn-icon">📱</div>
+      <b>Handheld escanea pase</b>
+      <p>El operador escanea el pase de abordar del pasajero. El servicio queda vinculado.</p>
+    </div>
+    <div class="farrow">›</div>
+    <div class="fnode">
+      <div class="fn-num">05</div>
+      <div class="fn-icon">✅</div>
+      <b>Registro automático</b>
+      <p>Servicio completado: operador, hora, aerolínea, PNR — todo en base de datos.</p>
+    </div>
+  </div>
+  <div class="foot">03 / 09</div>
+</section>
+
+<!-- 04 IDENTIFICACIÓN NFC -->
+<section class="slide" id="s4">
+  <div class="tag sec reveal">Seguridad de identidad</div>
+  <h2 class="reveal">Cada operador,<br>verificado en tiempo real</h2>
+  <p class="sub reveal">La pulsera NFC es el pasaporte digital del sillero. No hay servicio sin identidad confirmada.</p>
+  <div class="nfc-wrap reveal">
+    <div class="nfc-card">
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <div class="nfc-chip"></div>
+        <div class="nfc-signal">📡</div>
+      </div>
+      <div>
+        <div class="nfc-number">0xA3 · F2 · 91 · 4C</div>
+        <div class="nfc-name">Operador MEXT1-0042</div>
+      </div>
+    </div>
+    <div class="nfc-list">
+      <div class="nfc-point">
+        <div class="np-icon">🔒</div>
+        <div>
+          <b>ID única e intransferible</b>
+          <p>Cada pulsera tiene un identificador NFC grabado. No puede ser prestada ni clonada en operación.</p>
+        </div>
+      </div>
+      <div class="nfc-point">
+        <div class="np-icon">🕐</div>
+        <div>
+          <b>Turno vinculado al operador</b>
+          <p>La bitácora registra entrada, salida y cada servicio asignado durante el turno de ese operador específico.</p>
+        </div>
+      </div>
+      <div class="nfc-point">
+        <div class="np-icon">🔍</div>
+        <div>
+          <b>Auditorio por operador</b>
+          <p>Cualquier incidente puede rastrearse: ¿quién atendió? ¿a qué hora? ¿qué vuelo? Respuesta en segundos.</p>
+        </div>
+      </div>
+      <div class="nfc-point">
+        <div class="np-icon">🚫</div>
+        <div>
+          <b>Sin NFC, sin servicio</b>
+          <p>El sistema no permite registrar un servicio sin operador identificado. El control es estructural, no de honor.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">04 / 09</div>
+</section>
+
+<!-- 05 TRAZABILIDAD -->
+<section class="slide" id="s5">
+  <div class="tag data reveal">Trazabilidad</div>
+  <h2 class="reveal">Evidencia digital<br>de cada movimiento</h2>
+  <p class="sub reveal">Cada campo capturado es un dato auditable. Mintaka construye el expediente operativo automáticamente.</p>
+  <div class="trace-row reveal">
+    <div class="trace-box ac">
+      <div class="tb-label">Quién</div>
+      <div class="tb-val">Operador</div>
+      <div class="tb-desc">Nombre, número de colaborador, NFC ID — identificación verificada</div>
+    </div>
+    <div class="trace-box gc">
+      <div class="tb-label">Cuándo</div>
+      <div class="tb-val">Timestamp</div>
+      <div class="tb-desc">Hora exacta de asignación, inicio y fin de servicio</div>
+    </div>
+    <div class="trace-box yc">
+      <div class="tb-label">A quién</div>
+      <div class="tb-val">PNR + Pase</div>
+      <div class="tb-desc">Pasajero vinculado por pase de abordar escaneado — no por declaración</div>
+    </div>
+    <div class="trace-box rc">
+      <div class="tb-label">Dónde</div>
+      <div class="tb-val">Estación</div>
+      <div class="tb-desc">Terminal, aerolínea, número de vuelo y ruta registrados</div>
+    </div>
+  </div>
+  <div class="tlist reveal">
+    <div class="titem ac">
+      <div class="ti-icon ac">📊</div>
+      <div>
+        <b>Dashboard en tiempo real</b>
+        <p>Panel web actualizado al instante — coordinadores y supervisores ven la operación completa sin llamadas.</p>
+      </div>
+    </div>
+    <div class="titem gc">
+      <div class="ti-icon gc">📁</div>
+      <div>
+        <b>Historial exportable</b>
+        <p>Cualquier rango de fechas puede ser consultado y cruzado contra manifiestos de aerolínea para validación.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot">05 / 09</div>
+</section>
+
+<!-- 06 SEGURIDAD AEROPORTUARIA -->
+<section class="slide" id="s6">
+  <div class="tag sec reveal">Seguridad aeroportuaria</div>
+  <h2 class="reveal">Control que cumple<br>con la operación real</h2>
+  <p class="sub reveal">Mintaka resuelve los puntos de fricción que la seguridad aeroportuaria enfrenta con el servicio de asistencia especial.</p>
+  <div class="tlist reveal">
+    <div class="titem ac">
+      <div class="ti-icon ac">🛂</div>
+      <div>
+        <b>Acreditación operativa verificable</b>
+        <p>El sistema confirma que solo colaboradores activos en turno realizan servicios. La pulsera es la credencial de operación.</p>
+      </div>
+    </div>
+    <div class="titem gc">
+      <div class="ti-icon gc">🔎</div>
+      <div>
+        <b>Respuesta rápida ante incidentes</b>
+        <p>Si un pasajero reporta un problema, la trazabilidad permite identificar al operador, el servicio y la secuencia de hechos en menos de 30 segundos.</p>
+      </div>
+    </div>
+    <div class="titem yc">
+      <div class="ti-icon yc">🗂️</div>
+      <div>
+        <b>Soporte a auditorías</b>
+        <p>Cada servicio genera un registro con fecha, hora, operador y pasajero. El expediente está disponible ante cualquier revisión sin depender de memoria ni papel.</p>
+      </div>
+    </div>
+    <div class="titem rc">
+      <div class="ti-icon rc">🚨</div>
+      <div>
+        <b>Detección de anomalías operativas</b>
+        <p>El sistema alerta cuando un operador no identificado intenta registrar servicios, cuando hay servicios duplicados o tiempos fuera de rango.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot">06 / 09</div>
+</section>
+
+<!-- 07 RED DE ESTACIONES -->
+<section class="slide" id="s7">
+  <div class="tag ops reveal">Cobertura</div>
+  <h2 class="reveal">Una plataforma,<br>múltiples aeropuertos</h2>
+  <p class="sub reveal">Mintaka opera de forma centralizada pero con visibilidad granular por estación. El mismo estándar de control en cada terminal.</p>
+  <div class="station-grid reveal">
+    <div class="stn">
+      <div class="stn-dot"></div>
+      <div class="stn-code">MEX T1</div>
+      <div class="stn-name">Ciudad de México<br>Terminal 1</div>
+    </div>
+    <div class="stn">
+      <div class="stn-dot"></div>
+      <div class="stn-code">MEX T2</div>
+      <div class="stn-name">Ciudad de México<br>Terminal 2</div>
+    </div>
+    <div class="stn">
+      <div class="stn-dot"></div>
+      <div class="stn-code">CUN</div>
+      <div class="stn-name">Cancún<br>Internacional</div>
+    </div>
+    <div class="stn">
+      <div class="stn-dot"></div>
+      <div class="stn-code">GDL</div>
+      <div class="stn-name">Guadalajara<br>Don Miguel</div>
+    </div>
+    <div class="stn">
+      <div class="stn-dot"></div>
+      <div class="stn-code">PVR</div>
+      <div class="stn-name">Puerto Vallarta<br>Gustavo Díaz</div>
+    </div>
+    <div class="stn">
+      <div class="stn-dot"></div>
+      <div class="stn-code">MTY</div>
+      <div class="stn-name">Monterrey<br>Mariano Escobedo</div>
+    </div>
+  </div>
+  <div class="live-label reveal">
+    <div class="live-dot"></div>
+    En operación ahora mismo
+  </div>
+  <div class="foot">07 / 09</div>
+</section>
+
+<!-- 08 MÉTRICAS -->
+<section class="slide" id="s8">
+  <div class="tag data reveal">Impacto operativo</div>
+  <h2 class="reveal">Números que respaldan<br>el control</h2>
+  <p class="sub reveal">La tecnología no es el fin — el fin es una operación medible, defendible y mejorable.</p>
+  <div class="grid reveal">
+    <div class="card ac">
+      <div class="num">100%</div>
+      <div class="lbl">Servicios con operador identificado — ningún servicio anónimo</div>
+    </div>
+    <div class="card gc">
+      <div class="num">&lt;30s</div>
+      <div class="lbl">Tiempo de respuesta para rastrear cualquier incidente</div>
+    </div>
+    <div class="card yc">
+      <div class="num">6</div>
+      <div class="lbl">Aeropuertos operando bajo el mismo estándar de control</div>
+    </div>
+    <div class="card" style="background:var(--card)">
+      <div class="num" style="color:var(--accent)">24/7</div>
+      <div class="lbl">Registro continuo — sin ventanas muertas de operación</div>
+    </div>
+  </div>
+  <div class="titem gc reveal" style="margin-top:1.2rem">
+    <div class="ti-icon gc">📈</div>
+    <div>
+      <b>Más servicios no es más riesgo — es más datos</b>
+      <p>Alto volumen de servicios registrados = mayor productividad verificada. La plataforma convierte operación en evidencia ejecutiva.</p>
+    </div>
+  </div>
+  <div class="foot">08 / 09</div>
+</section>
+
+<!-- 09 CTA -->
+<section class="slide cta" id="s9">
+  <div class="tag cta reveal">Siguiente paso</div>
+  <h2 class="reveal">Mintaka está listo.<br>¿Lo vemos en vivo?</h2>
+  <p class="sub reveal">La mejor forma de entender el sistema es verlo operar en tiempo real. Podemos agendar un demo en cualquier estación activa.</p>
+  <div class="cta-grid reveal">
+    <div class="cta-card">
+      <div class="cc-label">Sistema en producción</div>
+      <div class="cc-val"><a href="https://estaciones.orionadministracion.com" target="_blank">estaciones.orionadministracion.com</a></div>
+    </div>
+    <div class="cta-card">
+      <div class="cc-label">Estaciones activas</div>
+      <div class="cc-val">MEXT1 · MEXT2 · CUN · GDL · PVR · MTY</div>
+    </div>
+    <div class="cta-card">
+      <div class="cc-label">Capacidad de demo</div>
+      <div class="cc-val">Visita presencial o acceso remoto al panel en vivo</div>
+    </div>
+    <div class="cta-card">
+      <div class="cc-label">Estándar</div>
+      <div class="cc-val">NFC · Handheld · Panel web · Base de datos centralizada</div>
+    </div>
+  </div>
+  <div class="foot">Mintaka · Orión Administración · 2026</div>
+</section>
+
+</div><!-- /deck -->
+
+<script>
+const slides=document.querySelectorAll('.slide');
+const nav=document.getElementById('nav');
+const prog=document.getElementById('prog');
+const hint=document.getElementById('hint');
+
+// Build nav dots
+slides.forEach((s,i)=>{
+  const a=document.createElement('a');
+  a.href='#'+s.id;
+  nav.appendChild(a);
+});
+
+// Intersection observer for reveal
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+    }
+  });
+},{threshold:0.25});
+slides.forEach(s=>io.observe(s));
+
+// Progress + active dot
+function onScroll(){
+  const scrolled=window.scrollY;
+  const total=document.body.scrollHeight-window.innerHeight;
+  prog.style.width=(scrolled/total*100)+'%';
+  let active=0;
+  slides.forEach((s,i)=>{
+    if(s.getBoundingClientRect().top<window.innerHeight*.5) active=i;
+  });
+  nav.querySelectorAll('a').forEach((a,i)=>a.classList.toggle('on',i===active));
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+
+// Hide hint after first scroll
+window.addEventListener('scroll',()=>{hint.style.opacity='0'},{once:true});
+</script>
+</body>
+</html>
