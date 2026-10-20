@@ -1,0 +1,10 @@
+{
+  "api_key": "AQ.Ab8RN6KMMzBYl9VFGqLBjLpatIulUik3NYVBD_G3jqvXwWzrAg",
+  "embed_model": "gemini-embedding-001",
+  "chat_model": "gemini-2.0-flash",
+  "language": "es",
+  "smart_connections_folder": ".smart-connections",
+  "show_full_path": true,
+  "results_limit": 5,
+  "log_render": false
+}

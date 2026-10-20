@@ -115,7 +115,25 @@
   body.show-anexos .anexo{display:flex}
   .anexlink{position:fixed;bottom:16px;right:18px;z-index:60;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:#6E80A6;text-decoration:none;opacity:.45;transition:opacity .3s}
   .anexlink:hover{opacity:1;color:var(--coral)}
-  @media print{.slide{min-height:auto;page-break-after:always;padding:5vh 6vw}.reveal{opacity:1;transform:none}.bar .fill{height:var(--h)!important}.prog,.nav,.hint,.anexlink{display:none}.hero,.cta{animation:none}.anexo{display:flex!important}}
+  /* Grouped bars: arrivals (teal) + departures (coral) */
+  .bar2{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+  .bar2 .fills{display:flex;gap:3px;align-items:flex-end;width:90%;flex:1}
+  .bar2 .fa{flex:1;background:linear-gradient(180deg,var(--teal),var(--navy2));border-radius:6px 6px 0 0;position:relative;height:0;transition:height 1.1s cubic-bezier(.2,.7,.2,1)}
+  .bar2 .fd{flex:1;background:linear-gradient(180deg,var(--coral),#C70468);border-radius:6px 6px 0 0;position:relative;height:0;transition:height 1.1s cubic-bezier(.2,.7,.2,1)}
+  .slide.in .bar2 .fa{height:var(--ha)}
+  .slide.in .bar2 .fd{height:var(--hd)}
+  .bar2 .va{position:absolute;top:-1.4rem;left:50%;transform:translateX(-50%);font-weight:800;font-size:.76rem;color:var(--navy);white-space:nowrap}
+  .bar2 .vd{position:absolute;top:-1.4rem;left:50%;transform:translateX(-50%);font-weight:800;font-size:.76rem;color:var(--coral);white-space:nowrap}
+  .bar2 .lx{color:var(--mut);font-weight:600;font-size:.78rem;white-space:nowrap;padding-top:.3rem}
+  .bleg{display:flex;gap:1.2rem;font-size:.82rem;font-weight:700;margin-top:.3rem;margin-bottom:.4rem}
+  .bleg .dot{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:.3rem;vertical-align:middle}
+  /* IATA chips for UH destinations slide */
+  .chip{display:inline-block;padding:.22rem .55rem;border-radius:999px;font-size:.76rem;font-weight:700;letter-spacing:.04em}
+  .chip-us{background:#EAF0FF;color:#2647A6}
+  .chip-mx{background:#FDE7F1;color:#C70468}
+  .chip-eu{background:#E6F7F9;color:#008A99}
+  .chip-la{background:#E9FDED;color:#16A34A}
+  @media print{.slide{min-height:auto;page-break-after:always;padding:5vh 6vw}.reveal{opacity:1;transform:none}.bar .fill{height:var(--h)!important}.bar2 .fa{height:var(--ha)!important}.bar2 .fd{height:var(--hd)!important}.prog,.nav,.hint,.anexlink{display:none}.hero,.cta{animation:none}.anexo{display:flex!important}}
 </style>
 </head>
 <body>
@@ -217,7 +235,7 @@
     <div class="row"><div class="t">09:50 – 12:00</div><div class="d"><b>Internacional</b> → posiciones <b>52–62</b>.</div></div>
     <div class="row"><div class="t">11:00</div><div class="d"><b>Nacional</b> → posiciones <b>63–81</b>.</div></div>
   </div>
-  <div class="value reveal" style="margin-top:1.4rem"><span class="h">Picos de demanda</span><b>Acapulco</b> y <b>Oaxaca</b>: +5 servicios simultáneos, hasta <b>30 en simultáneo</b>.</div>
+  <div class="value reveal" style="margin-top:1.4rem"><span class="h">Picos de demanda</span>Vuelos de <b>Acapulco (ACA)</b> y <b>Oaxaca (OAX)</b> aterrizan en el mismo banco horario (12:00–13:00). En días pico generaron hasta <b>18 servicios UH combinados en una hora</b>. Sumados al resto de llegadas de esa franja (~38 servicios/día en promedio), la demanda simultánea total superó los <b>30 servicios activos al mismo tiempo</b>.</div>
   <div class="foot"><span>Guardia matutina · ventana horaria</span><span>05</span></div>
 </section>
 
@@ -242,16 +260,20 @@
   <span class="tag medible reveal">Pilar · Medible + Humano</span>
   <h2 class="reveal">Guardias dimensionadas por demanda real</h2>
   <p class="sub reveal">Las <b>llegadas son el 65%</b> de la operación y caen en <b>bancos simultáneos</b>: varios vuelos aterrizan a la vez y piden silla al mismo tiempo. La curva define <b>dónde y cuánto reforzar</b>.</p>
-  <div class="bars reveal" style="height:150px;margin-top:1.3rem;padding-bottom:1.2rem">
-    <div class="bar"><div class="fill" style="--h:40%"><span class="v">18</span><span class="x">07:00</span></div></div>
-    <div class="bar"><div class="fill" style="--h:45%"><span class="v">20</span><span class="x">09:30</span></div></div>
-    <div class="bar"><div class="fill" style="--h:70%"><span class="v">31</span><span class="x">10:30</span></div></div>
-    <div class="bar"><div class="fill" style="--h:72%"><span class="v">32</span><span class="x">12:30</span></div></div>
-    <div class="bar"><div class="fill" style="--h:74%"><span class="v">33</span><span class="x">13:00</span></div></div>
-    <div class="bar"><div class="fill" style="--h:90%"><span class="v">40</span><span class="x">15:00</span></div></div>
-    <div class="bar"><div class="fill" style="--h:52%"><span class="v">23</span><span class="x">18:00</span></div></div>
+  <div class="bleg reveal">
+    <span><span class="dot" style="background:var(--teal)"></span>Llegadas</span>
+    <span><span class="dot" style="background:var(--coral)"></span>Salidas</span>
   </div>
-  <p class="sub reveal" style="font-size:.85rem;margin-top:1.1rem">Sillas de <b>llegada</b> solicitadas por franja de 30 min · promedio diario.</p>
+  <div class="bars reveal" style="height:150px;margin-top:.4rem;padding-bottom:1.2rem;gap:.8rem">
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:40%"><span class="va">18</span></div><div class="fd" style="--hd:74%"><span class="vd">33</span></div></div><div class="lx">07:00</div></div>
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:45%"><span class="va">20</span></div><div class="fd" style="--hd:61%"><span class="vd">27</span></div></div><div class="lx">09:30</div></div>
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:70%"><span class="va">31</span></div><div class="fd" style="--hd:36%"><span class="vd">16</span></div></div><div class="lx">10:30</div></div>
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:72%"><span class="va">32</span></div><div class="fd" style="--hd:45%"><span class="vd">20</span></div></div><div class="lx">12:30</div></div>
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:74%"><span class="va">33</span></div><div class="fd" style="--hd:45%"><span class="vd">20</span></div></div><div class="lx">13:00</div></div>
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:90%"><span class="va">40</span></div><div class="fd" style="--hd:59%"><span class="vd">26</span></div></div><div class="lx">15:00</div></div>
+    <div class="bar2"><div class="fills"><div class="fa" style="--ha:52%"><span class="va">23</span></div><div class="fd" style="--hd:45%"><span class="vd">20</span></div></div><div class="lx">18:00</div></div>
+  </div>
+  <p class="sub reveal" style="font-size:.85rem;margin-top:1.1rem">Servicios por franja de 30 min · promedio diario MEXT2 AM · <b>azul = llegadas</b>, <b>coral = salidas</b>. La simultaneidad de ambos flujos justifica la guardia de refuerzo.</p>
   <div class="value reveal" style="margin-top:1rem;padding:1rem 1.4rem"><span class="h" style="margin-bottom:.3rem">Naturaleza del déficit</span>No es falta de plantilla: es de <b>simultaneidad</b> en los bancos de llegada, agravada por la <b>falta de info previa</b>. En el periodo, <b>52.5% de las sillas de llegada AM en MEXT2 (26,266 de 50,072) entraron como UH — última hora, sin aviso previo de la estación de origen</b> → imposibles de planear. El 47.5% restante sí venía cargado en sistema.</div>
   <div class="grid reveal" style="margin-top:1rem">
     <div class="card navyc"><div class="num">63</div><div class="lbl">Sillas pico en una sola franja de 30 min (19-sep · 15:00)</div></div>
@@ -262,11 +284,173 @@
   <div class="foot"><span>Dimensionamiento de guardias · demanda de llegadas</span><span>07</span></div>
 </section>
 
+<!-- s4c: TOP 20 DESTINOS UH Q3 2026 -->
+<section class="slide" id="s4c">
+  <span class="tag medible reveal">Pilar · Medible + Humano</span>
+  <h2 class="reveal">Top 20 orígenes UH — servicios de llegada sin aviso</h2>
+  <p class="sub reveal">Los <b>103 orígenes</b> que generaron llegadas UH en el trimestre (jul–sep 2026). Sin excepción: ninguno garantiza aviso previo a MEXT.</p>
+  <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2.5rem;margin-top:1.4rem">
+    <!-- col 1: ranks 1-10 -->
+    <div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">1</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">LAX</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Los Ángeles</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:100%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">3,020</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">2</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">ORD</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Chicago</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:75%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">2,261</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">3</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">SFO</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">San Francisco</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:43%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">1,296</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">4</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">JFK</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nueva York</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:43%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">1,295</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">5</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">TIJ</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Tijuana</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:34%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">1,035</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">6</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">SEA</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Seattle</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:30%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">896</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">7</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">CUN</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Cancún</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:28%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">845</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">8</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">MID</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Mérida</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:28%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">839</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">9</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">MIA</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Miami</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:26%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">788</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">10</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">SLC</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Salt Lake City</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:24%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">737</span>
+      </div>
+    </div>
+    <!-- col 2: ranks 11-20 -->
+    <div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">11</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">IAH</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Houston</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:23%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">702</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">12</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">OAX</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Oaxaca</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:23%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">684</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">13</span>
+        <span class="chip chip-eu" style="width:2.8rem;text-align:center">MAD</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Madrid</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:22%;background:var(--teal);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:#008A99;width:2.8rem;text-align:right">652</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">14</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">PHL</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Filadelfia</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:21%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">648</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">15</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">EWR</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Newark</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:21%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">636</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">16</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">VER</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Veracruz</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:19%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">574</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">17</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">VSA</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Villahermosa</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:18%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">550</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">18</span>
+        <span class="chip chip-mx" style="width:2.8rem;text-align:center">MTY</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Monterrey</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:17%;background:var(--coral);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--coral);width:2.8rem;text-align:right">506</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">19</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">IAD</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Washington DC</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:17%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">502</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.45rem;padding:.28rem 0;border-bottom:1px solid var(--line)">
+        <span style="width:1.3rem;font-size:.75rem;font-weight:700;color:var(--mut);text-align:right">20</span>
+        <span class="chip chip-us" style="width:2.8rem;text-align:center">RDU</span>
+        <span style="font-size:.75rem;color:#25324a;font-weight:600;width:6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Raleigh-Durham</span>
+        <div style="flex:1;background:#E3E8F2;border-radius:4px;height:7px"><div style="width:15%;background:var(--navy2);border-radius:4px;height:7px"></div></div>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);width:2.8rem;text-align:right">465</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:1.2rem;margin-top:.8rem;font-size:.78rem;font-weight:700" class="reveal">
+    <span><span class="dot" style="background:var(--navy2)"></span>EUA / Canadá</span>
+    <span><span class="dot" style="background:var(--coral)"></span>México doméstico</span>
+    <span><span class="dot" style="background:var(--teal)"></span>Europa</span>
+    <span style="color:var(--mut)">· 103 orígenes totales en el trimestre</span>
+  </div>
+  <div class="foot"><span>Destinos UH · Top 20 por volumen</span><span>08</span></div>
+</section>
+
 <!-- TIMING: ASIGNADO → INICIADO -->
 <section class="slide" id="s5t">
   <span class="tag medible reveal">Pilar · Medible</span>
   <h2 class="reveal">Tiempo de respuesta — Asignado → Iniciado</h2>
-  <p class="sub reveal">Del momento en que el coordinador asigna el servicio hasta que el operador lo inicia. <b>67,549 servicios AM</b> · MEXT1 + MEXT2 · comparativo trimestral.</p>
+  <p class="sub reveal">Del momento en que el coordinador asigna el servicio hasta que el operador lo inicia. MEXT1 + MEXT2 · comparativo trimestral.</p>
 
   <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:1.6rem">
 
@@ -274,7 +458,7 @@
     <div>
       <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem">
         <span style="background:#FDE7F1;color:var(--coral);font-weight:800;font-size:.8rem;padding:.3rem .9rem;border-radius:999px;letter-spacing:.06em">LLEGADAS</span>
-        <span style="color:var(--mut);font-size:.85rem;font-weight:600">41,630 servicios · jul–sep</span>
+        <span style="color:var(--mut);font-size:.85rem;font-weight:600">jul–sep 2026</span>
       </div>
       <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:0;gap:.7rem">
         <div class="card accent" style="padding:1rem 1.1rem">
@@ -302,9 +486,9 @@
     <div>
       <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem">
         <span style="background:#E6F7F9;color:#008A99;font-weight:800;font-size:.8rem;padding:.3rem .9rem;border-radius:999px;letter-spacing:.06em">SALIDAS</span>
-        <span style="color:var(--mut);font-size:.85rem;font-weight:600">25,919 servicios · jul–sep</span>
+        <span style="color:var(--mut);font-size:.85rem;font-weight:600">jul–sep 2026</span>
       </div>
-      <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:0;gap:.7rem">
+      <div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:0;gap:.7rem">
         <div class="card tealc" style="padding:1rem 1.1rem">
           <div class="num" style="font-size:2.2rem">1.2</div>
           <div class="lbl">min mediana</div>
@@ -317,12 +501,6 @@
           <div style="margin-top:.6rem;font-size:.8rem;color:#DCF5E5;font-weight:700">vs 64% trim ant.</div>
           <div style="font-size:1rem;font-weight:800;color:#A8EFC4">↑ +10 pp</div>
         </div>
-        <div class="card navyc" style="padding:1rem 1.1rem">
-          <div class="num" style="font-size:2.2rem">82%</div>
-          <div class="lbl">atiende &lt; 15 min</div>
-          <div style="margin-top:.6rem;font-size:.8rem;color:#C3D1EA;font-weight:700">vs 72% trim ant.</div>
-          <div style="font-size:1rem;font-weight:800;color:#A0B8E0">↑ +10 pp</div>
-        </div>
       </div>
     </div>
 
@@ -331,7 +509,7 @@
   <div class="value reveal" style="margin-top:1.3rem;padding:.9rem 1.4rem">
     <span class="h">Lectura del comparativo</span>El <b>mostrador en salidas</b> redujo la mediana de respuesta a la mitad (2.2 → 1.2 min) y llevó el 74% de los servicios a menos de 5 minutos. Las <b>llegadas</b> siguen sin cambio estructural: más volumen y más UH elevan levemente el tiempo — argumento directo para la <b>guardia de refuerzo</b>.
   </div>
-  <div class="foot"><span>Tiempos de atención · Asignado → Iniciado</span><span>08</span></div>
+  <div class="foot"><span>Tiempos de atención · Asignado → Iniciado</span><span>09</span></div>
 </section>
 
 <!-- 5R POSICIONES REMOTAS -->
@@ -344,8 +522,8 @@
     <div class="card accent"><div class="num">631</div><div class="lbl">Servicios ejecutados<br>en sala remota</div></div>
     <div class="card"><div class="num" style="color:var(--coral)">+1</div><div class="lbl">Elemento extra por vuelo remoto<br>(pasillera en cobús)</div></div>
   </div>
-  <div class="value reveal"><span class="h">Carga real</span><b>552 elementos-turno adicionales</b> demandados solo por posiciones remotas en el trimestre — carga operativa medible que refuerza el dimensionamiento de guardias.</div>
-  <div class="foot"><span>Posiciones remotas · carga adicional</span><span>09</span></div>
+  <div class="value reveal"><span class="h">Carga real</span><b>552 vuelos AM</b> operados en posición remota durante el trimestre — cada uno requirió <b>1 elemento adicional</b> (pasillera en cobús) que no aparece en la métrica estándar de servicios. Distribuidos en distintos turnos a lo largo del trimestre, representan carga operativa adicional medible y trazable.</div>
+  <div class="foot"><span>Posiciones remotas · carga adicional</span><span>10</span></div>
 </section>
 
 <!-- 5 MOSTRADOR (SALIDAS) -->
@@ -370,7 +548,7 @@
       <div class="card"><div class="num" style="color:var(--coral)">1×bahía</div><div class="lbl">Mostrador dedicado por posición</div></div>
     </div>
   </div>
-  <div class="foot"><span>Mostrador por bahía · salidas</span><span>10</span></div>
+  <div class="foot"><span>Mostrador por bahía · salidas</span><span>11</span></div>
 </section>
 
 <!-- 6 MANTENIMIENTO -->
@@ -394,7 +572,7 @@
       <div class="card"><div class="num" style="color:var(--navy)">305</div><div class="lbl">Movimientos de inventario</div></div>
     </div>
   </div>
-  <div class="foot"><span>Control de Mantenimiento</span><span>11</span></div>
+  <div class="foot"><span>Control de Mantenimiento</span><span>12</span></div>
 </section>
 
 <!-- 7 ESTACIONES CONECTADAS -->
@@ -453,7 +631,7 @@
       <p class="mapcap"><b class="cnt" data-target="144558">144,558</b> servicios AM en la red nacional · jul–sep 2026</p>
     </div>
   </div>
-  <div class="foot"><span>Red Nacional · Estaciones conectadas</span><span>12</span></div>
+  <div class="foot"><span>Red Nacional · Estaciones conectadas</span><span>13</span></div>
 </section>
 
 <!-- 9 INTEGRACION TRANSFORMACION DIGITAL -->
@@ -474,7 +652,7 @@
     <div class="value"><span class="h">Beneficio Aeroméxico</span><b>El servicio se planea desde que el pasajero lo solicita</b> — sin capturas manuales, sin pérdidas, con la reserva integrada de punta a punta.</div>
     <span class="badge reveal">Instancia desarrollada y probada de nuestro lado · en espera de la respuesta de su equipo</span>
   </div>
-  <div class="foot"><span>Integración · Transformación Digital</span><span>13</span></div>
+  <div class="foot"><span>Integración · Transformación Digital</span><span>14</span></div>
 </section>
 
 <!-- 10 ACCESOS / DEMO -->
@@ -494,7 +672,7 @@
       <p style="margin-top:.8rem"><a href="https://mantenimiento.orionadministracion.com/">mantenimiento.orionadministracion.com</a></p>
     </div>
   </div>
-  <div class="foot"><span>Demo en vivo</span><span>14</span></div>
+  <div class="foot"><span>Demo en vivo</span><span>15</span></div>
 </section>
 
 <!-- 10B SOLICITUDES / APOYO -->
@@ -507,7 +685,7 @@
     <div class="card tealc"><div class="num" style="font-size:1.5rem">Cobús</div><div class="lbl">Mejor comunicación con el equipo de cobús para coordinar el traslado del pasajero a la aeronave sin demoras.</div></div>
     <div class="card accent"><div class="num" style="font-size:1.5rem">+1 pasillera</div><div class="lbl">Considerar una persona más para ejecutar los servicios en posiciones remotas ("pasilleras").</div></div>
   </div>
-  <div class="foot"><span>Solicitudes de apoyo · Aeroméxico</span><span>15</span></div>
+  <div class="foot"><span>Solicitudes de apoyo · Aeroméxico</span><span>16</span></div>
 </section>
 
 <!-- 11 CIERRE -->
@@ -524,7 +702,7 @@
   <div class="feat">
     <div class="reveal">
       <h2>Cómo medimos el no-show</h2>
-      <p class="sub">Definición detrás de las cifras del <b>Slide 10</b>, para trazabilidad y auditoría.</p>
+      <p class="sub">Definición detrás de las cifras del <b>Slide 11</b>, para trazabilidad y auditoría.</p>
       <ul class="pts">
         <li><b>No-show</b> = pasajero con servicio de silla solicitado que no se presenta a su vuelo.</li>
         <li><b>Fórmula:</b> No-show % = servicios no presentados ÷ servicios gestionados.</li>
