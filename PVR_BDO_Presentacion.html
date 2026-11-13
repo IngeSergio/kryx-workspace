@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orión · BDO · Puerto Vallarta — Propuesta de Servicio</title>
+<style>
+  :root{
+    --navy:#060F1F; --accent:#00D4FF; --gold:#F59E0B;
+    --green:#10B981; --red:#EF4444; --amber:#F59E0B; --muted:#4A6080;
+    --bg:#080E1C; --card:#0D1E3A; --line:#1A2E4A; --white:#F0F6FF;
+    --purple:#3B2379; --lilac:#7C5CBF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased}
+
+  body::after{content:"";position:fixed;inset:0;
+    background-image:radial-gradient(circle,rgba(0,212,255,.03) 1px,transparent 1px);
+    background-size:44px 44px;pointer-events:none;z-index:0}
+
+  .deck{position:relative;width:100%;height:100%}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;opacity:0;pointer-events:none;
+    transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1),filter .55s;
+    transform:scale(.97) translateY(24px);filter:blur(4px);overflow:hidden}
+  .slide.active{opacity:1;pointer-events:all;transform:none;filter:none;z-index:2}
+  .slide.leaving{opacity:0;transform:scale(1.03) translateY(-24px);filter:blur(6px);z-index:1}
+
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(-2vw,2vw)}}
+  @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(2vw,-1.5vw)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @keyframes scanline{0%{top:-4%}100%{top:100%}}
+  @keyframes growbar{0%{width:0}82%{width:calc(var(--w) * 1.04)}100%{width:var(--w)}}
+  @keyframes countUp{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+  @keyframes statPulse{0%,100%{box-shadow:0 0 18px rgba(0,212,255,.09),inset 0 0 0 rgba(0,212,255,0)}
+    50%{box-shadow:0 0 36px rgba(0,212,255,.22),inset 0 0 20px rgba(0,212,255,.04)}}
+  @keyframes heroGlow{0%,100%{text-shadow:0 0 80px rgba(0,212,255,.12)}
+    50%{text-shadow:0 0 120px rgba(0,212,255,.28),0 0 40px rgba(0,212,255,.15)}}
+  @keyframes borderPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0)}
+    50%{box-shadow:0 0 0 3px rgba(0,212,255,.2)}}
+  @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+
+  .slide.active .reveal{animation:countUp .5s ease both}
+  .slide.active .reveal:nth-child(1){animation-delay:.05s}
+  .slide.active .reveal:nth-child(2){animation-delay:.12s}
+  .slide.active .reveal:nth-child(3){animation-delay:.20s}
+  .slide.active .reveal:nth-child(4){animation-delay:.28s}
+  .slide.active .reveal:nth-child(5){animation-delay:.36s}
+  .slide.active .reveal:nth-child(6){animation-delay:.44s}
+  .slide.active .reveal:nth-child(7){animation-delay:.52s}
+  .slide.active .reveal:nth-child(8){animation-delay:.60s}
+  .slide.active .bar-fill{animation:growbar 1.1s cubic-bezier(.2,.7,.2,1) both}
+  .slide.active .bar-fill:nth-child(1){animation-delay:.4s}
+
+  /* ── HERO ── */
+  .hero{background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(0,212,255,.13),transparent 60%),
+        radial-gradient(ellipse 50% 80% at 20% 80%,rgba(59,35,121,.2),transparent 60%),
+        linear-gradient(160deg,#030810,#060F1F 50%,#0A1428)}
+  .hero h1{animation:heroGlow 4s ease-in-out infinite}
+  .hero-orb{position:absolute;width:62vw;height:62vw;right:-18vw;top:-18vw;
+    background:radial-gradient(circle,rgba(0,212,255,.09) 0%,rgba(0,212,255,.03) 40%,transparent 65%);
+    border-radius:50%;animation:float 14s ease-in-out infinite}
+  .hero-orb2{position:absolute;width:30vw;height:30vw;left:-8vw;bottom:-8vw;
+    background:radial-gradient(circle,rgba(59,35,121,.12),transparent 65%);
+    border-radius:50%;animation:float2 18s ease-in-out infinite}
+  .scanline-el{position:absolute;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent 5%,rgba(0,212,255,.55) 40%,rgba(0,212,255,.55) 60%,transparent 95%);
+    animation:scanline 4s linear infinite;box-shadow:0 0 8px rgba(0,212,255,.4)}
+
+  /* ── TYPOGRAPHY ── */
+  h1{font-size:clamp(2.4rem,5.5vw,4rem);line-height:1.05;font-weight:800;letter-spacing:-.03em}
+  h2{font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.3rem}
+  .sub{font-size:clamp(.95rem,1.5vw,1.2rem);color:#8AAFC8;font-weight:500;max-width:62ch;margin-top:.9rem;line-height:1.6}
+  .kicker{font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.8rem}
+  .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    padding:.28rem .7rem;border-radius:999px;margin-bottom:1rem}
+  .tag.ops{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.3)}
+  .tag.info{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.3)}
+  .tag.warn{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+  .tag.pur{background:rgba(59,35,121,.2);color:#A88CE0;border:1px solid rgba(124,92,191,.35)}
+
+  /* ── LOGO ── */
+  .logo-wrap{display:flex;align-items:center;gap:.9rem;margin-bottom:2rem}
+  .logo-img{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(0,212,255,.3))}
+  .logo-text{font-size:1.3rem;font-weight:800;letter-spacing:.04em}
+  .logo-text span{color:var(--accent)}
+  .badge-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem}
+  .badge-row .b{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+    color:#A8C4DC;padding:.4rem .9rem;border-radius:999px;font-size:.8rem;font-weight:600;
+    display:flex;align-items:center;gap:.35rem}
+  .dot-g{width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .dot-a{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .dot-y{width:6px;height:6px;border-radius:50%;background:var(--amber)}
+  .dot-p{width:6px;height:6px;border-radius:50%;background:#A88CE0}
+
+  /* ── STATS ── */
+  .stats-row{display:flex;gap:1rem;margin-top:1.6rem;flex-wrap:wrap}
+  .stat{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:1.2rem 1rem;transition:transform .2s}
+  .stat:hover{transform:translateY(-2px)}
+  .stat .num{font-size:clamp(2rem,3.6vw,2.9rem);font-weight:800;line-height:1;letter-spacing:-.03em}
+  .stat .lbl{color:#4A6A86;font-size:.82rem;font-weight:600;margin-top:.35rem;line-height:1.35}
+  .stat.ac{animation:statPulse 3.5s ease-in-out infinite}
+  .stat.ac .num{color:var(--accent)}
+  .stat.gc .num{color:var(--green)}
+  .stat.yc .num{color:var(--amber)}
+  .stat.pc .num{color:#A88CE0}
+
+  /* ── ZONE GRID ── */
+  .zone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-top:1.6rem}
+  @media(max-width:720px){.zone-grid{grid-template-columns:repeat(2,1fr)}}
+  .zone{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.2rem 1rem;position:relative;overflow:hidden}
+  .zone::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,.04),transparent 60%)}
+  .zone.z1{border-color:rgba(0,212,255,.3);box-shadow:0 0 24px rgba(0,212,255,.07)}
+  .zone.z2{border-color:rgba(16,185,129,.25);box-shadow:0 0 24px rgba(16,185,129,.06)}
+  .zone.z3{border-color:rgba(245,158,11,.25);box-shadow:0 0 24px rgba(245,158,11,.06)}
+  .zone.z4{border-color:rgba(239,68,68,.25);box-shadow:0 0 24px rgba(239,68,68,.06)}
+  .zone.z2::before{background:linear-gradient(135deg,rgba(16,185,129,.04),transparent 60%)}
+  .zone.z3::before{background:linear-gradient(135deg,rgba(245,158,11,.04),transparent 60%)}
+  .zone.z4::before{background:linear-gradient(135deg,rgba(239,68,68,.04),transparent 60%)}
+  .zone-label{font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:.4rem}
+  .zone.z1 .zone-label{color:var(--accent)}
+  .zone.z2 .zone-label{color:var(--green)}
+  .zone.z3 .zone-label{color:var(--amber)}
+  .zone.z4 .zone-label{color:var(--red)}
+  .zone-price{font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .zone.z1 .zone-price{color:var(--accent)}
+  .zone.z2 .zone-price{color:var(--green)}
+  .zone.z3 .zone-price{color:var(--amber)}
+  .zone.z4 .zone-price{color:var(--red)}
+  .zone-unit{font-size:.72rem;font-weight:600;color:#3A5A70;margin-top:.1rem}
+  .zone-places{font-size:.78rem;color:#6A8AAC;margin-top:.6rem;line-height:1.5;font-weight:500}
+
+  /* ── BEFORE/AFTER ── */
+  .prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.6rem}
+  @media(max-width:680px){.prob-grid{grid-template-columns:1fr}}
+  .prob-before{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.18);border-radius:16px;padding:1.4rem}
+  .prob-after{background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.18);border-radius:16px;padding:1.4rem}
+  .pb-label{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:.9rem}
+  .prob-before .pb-label{color:var(--red)}
+  .prob-after .pb-label{color:var(--green)}
+  ul.plist{list-style:none}
+  ul.plist li{padding:.45rem 0 .45rem 1.3rem;position:relative;font-size:.9rem;color:#8AAFC8;line-height:1.45}
+  ul.plist li:before{content:"";position:absolute;left:0;top:.85rem;width:6px;height:6px;border-radius:50%}
+  .prob-before ul.plist li:before{background:var(--red)}
+  .prob-after ul.plist li:before{background:var(--green)}
+
+  /* ── TLIST ── */
+  .tlist{display:flex;flex-direction:column;gap:.45rem;margin-top:1.4rem}
+  .titem{display:grid;grid-template-columns:38px 1fr;gap:.8rem;align-items:start;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.9rem 1.1rem}
+  .titem .ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;
+    justify-content:center;font-size:.95rem}
+  .titem.gc .ico{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)}
+  .titem.ac .ico{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2)}
+  .titem.yc .ico{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)}
+  .titem.pc .ico{background:rgba(124,92,191,.1);border:1px solid rgba(124,92,191,.2)}
+  .titem b{display:block;font-size:.93rem;margin-bottom:.12rem}
+  .titem p{color:#5A7A96;font-size:.83rem;line-height:1.45}
+
+  /* ── BAR CHART ── */
+  .bar-chart{display:flex;flex-direction:column;gap:.65rem;margin-top:1.4rem}
+  .bar-row{display:flex;align-items:center;gap:.7rem}
+  .bar-label{min-width:90px;font-size:.78rem;font-weight:700;color:#7A9AB8;text-align:right}
+  .bar-track{flex:1;height:28px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;position:relative}
+  .bar-fill{height:100%;border-radius:5px;width:0}
+  .bar-fill.ac{background:linear-gradient(90deg,#006678,#00D4FF)}
+  .bar-fill.gc{background:linear-gradient(90deg,#054330,#10B981)}
+  .bar-fill.yc{background:linear-gradient(90deg,#6B4300,#F59E0B)}
+  .bar-fill.rc{background:linear-gradient(90deg,#6B0A0A,#EF4444)}
+  .bar-fill.pc{background:linear-gradient(90deg,#2A1060,#7C5CBF)}
+  .bar-val{font-size:.75rem;font-weight:700;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);color:var(--white)}
+
+  /* ── RECARGOS TABLE ── */
+  .recargos{display:flex;flex-direction:column;gap:.4rem;margin-top:1.4rem}
+  .recargo-row{display:flex;align-items:center;gap:.8rem;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:.7rem 1rem}
+  .recargo-ico{font-size:1.1rem;width:28px;text-align:center;flex-shrink:0}
+  .recargo-name{flex:1;font-size:.88rem;font-weight:600;color:var(--white)}
+  .recargo-desc{font-size:.78rem;color:#5A7A96;margin-left:.4rem}
+  .recargo-val{font-size:.92rem;font-weight:800;flex-shrink:0}
+  .recargo-val.up{color:var(--amber)}
+  .recargo-val.neu{color:#5A7A96}
+
+  /* ── STATUS TABLE ── */
+  .status-table{width:100%;border-collapse:separate;border-spacing:0 .4rem;margin-top:1.6rem}
+  .status-table thead th{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:.3rem .9rem;text-align:left}
+  .status-table tbody tr{background:var(--card)}
+  .status-table tbody td{padding:.8rem .9rem;font-size:.88rem}
+  .status-table tbody td:first-child{border-radius:12px 0 0 12px;font-weight:800;color:var(--accent);font-size:.92rem}
+  .status-table tbody td:last-child{border-radius:0 12px 12px 0}
+  .pill{display:inline-flex;align-items:center;gap:.3rem;border-radius:999px;padding:.25rem .7rem;font-size:.72rem;font-weight:700}
+  .pill.g{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+  .pill.y{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.25)}
+  .pill.a{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.25)}
+  .pill-dot{width:5px;height:5px;border-radius:50%}
+  .pill.g .pill-dot{background:var(--green)}
+  .pill.y .pill-dot{background:var(--amber);animation:pulse 1.8s infinite}
+  .pill.a .pill-dot{background:var(--accent)}
+
+  /* ── CTA ── */
+  .cta-cards{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:1.4rem}
+  @media(max-width:680px){.cta-cards{grid-template-columns:1fr}}
+  .cta-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:1.1rem}
+  .cc-lbl{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:.35rem}
+  .cc-val{font-size:.93rem;font-weight:700;color:var(--white);line-height:1.5}
+  .cc-val.ac{color:var(--accent)}
+  .cc-val.gc{color:var(--green)}
+
+  /* ── AIRLINE GRID ── */
+  .airline-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem;margin-top:1.6rem}
+  @media(max-width:680px){.airline-grid{grid-template-columns:repeat(3,1fr)}}
+  .airline-card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:.9rem .7rem;text-align:center;position:relative;overflow:hidden}
+  .airline-card.hi{border-color:rgba(0,212,255,.28);box-shadow:0 0 16px rgba(0,212,255,.07)}
+  .airline-code{font-size:1.3rem;font-weight:800;color:var(--accent);letter-spacing:.04em}
+  .airline-name{font-size:.65rem;color:var(--muted);margin-top:.2rem;font-weight:600}
+  .airline-vol{font-size:.72rem;color:#8AAFC8;margin-top:.4rem;font-weight:700}
+
+  /* ── NAV ── */
+  .prog{position:fixed;top:0;left:0;height:3px;
+    background:linear-gradient(90deg,var(--accent),#00FF9F);
+    box-shadow:0 0 12px rgba(0,212,255,.6),0 0 4px rgba(0,212,255,.9);
+    z-index:99;transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
+  .dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.12);cursor:pointer;transition:.3s;display:block;border:1px solid rgba(255,255,255,.1)}
+  .dots span.on{background:var(--accent);transform:scale(1.6);box-shadow:0 0 8px rgba(0,212,255,.7);border-color:transparent}
+  .slide-num{position:fixed;bottom:20px;right:20px;font-size:.72rem;font-weight:700;
+    color:var(--muted);letter-spacing:.1em;z-index:50}
+  .click-hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.22);
+    color:var(--accent);font-size:.75rem;font-weight:600;padding:.4rem .85rem;
+    border-radius:999px;z-index:60;transition:opacity .8s;backdrop-filter:blur(8px)}
+  .foot{margin-top:auto;padding-top:1rem;font-size:.7rem;color:#1E3A56;font-weight:600;letter-spacing:.04em}
+
+  /* ── TWO-COL ── */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-top:1.6rem}
+  @media(max-width:700px){.two-col{grid-template-columns:1fr}}
+
+  /* ── BIG CLOSER ── */
+  .closer{background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(59,35,121,.25),transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 20%,rgba(0,212,255,.12),transparent 60%),
+    linear-gradient(160deg,#030810,#060F1F)}
+  .closer-icon{font-size:5rem;text-align:center;margin-bottom:1.4rem;line-height:1;
+    animation:heroGlow 4s ease-in-out infinite}
+  .closing-actions{display:flex;gap:1rem;margin-top:2.2rem;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.6rem;border-radius:999px;
+    font-size:.88rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:.2s}
+  .btn-primary{background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(0,212,255,.08));
+    border:1px solid rgba(0,212,255,.4);color:var(--accent)}
+  .btn-primary:hover{background:linear-gradient(135deg,rgba(0,212,255,.3),rgba(0,212,255,.12));
+    box-shadow:0 0 20px rgba(0,212,255,.2)}
+  .btn-secondary{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#8AAFC8}
+
+  /* ── HIGHLIGHT NUMBER ── */
+  .hi-num{color:var(--accent);font-weight:800}
+  .hi-green{color:var(--green);font-weight:800}
+  .hi-amber{color:var(--amber);font-weight:800}
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog" style="width:0%"></div>
+<div class="dots" id="dots"></div>
+<div class="slide-num" id="snum"></div>
+<div class="click-hint" id="hint">Click o → para avanzar</div>
+
+<div class="deck" id="deck">
+
+<!-- ════════════════════════════
+     S1 · PORTADA
+════════════════════════════ -->
+<section class="slide hero" id="s1">
+  <div class="hero-orb"></div>
+  <div class="hero-orb2"></div>
+  <div class="scanline-el"></div>
+
+  <div class="logo-wrap reveal">
+    <img class="logo-img" src="data:image/png;base64,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" alt="Orión" onerror="this.style.display='none'">
+    <div class="logo-text">ORI<span>ÓN</span></div>
+  </div>
+
+  <div class="kicker reveal">Propuesta de servicio · Puerto Vallarta · 2026</div>
+  <h1 class="reveal">Entrega de Equipaje<br>a Domicilio<br><span style="color:var(--accent)">BDO · PVR</span></h1>
+  <p class="sub reveal">Recuperamos el servicio que Orión operó históricamente en Puerto Vallarta —<br>conectando al pasajero con su equipaje perdido o retrasado <strong>donde sea que esté</strong>.</p>
+
+  <div class="stats-row reveal">
+    <div class="stat ac"><div class="num">4</div><div class="lbl">Zonas de cobertura<br>en Riviera Nayarit</div></div>
+    <div class="stat gc"><div class="num">$355</div><div class="lbl">Desde MXN por BDO<br>en zona centro</div></div>
+    <div class="stat yc"><div class="num">48 h</div><div class="lbl">SLA máximo de<br>entrega garantizada</div></div>
+    <div class="stat pc"><div class="num">10+</div><div class="lbl">Aerolíneas objetivo<br>operando en PVR</div></div>
+  </div>
+
+  <div class="badge-row reveal">
+    <div class="b"><span class="dot-g"></span>Operación inmediata disponible</div>
+    <div class="b"><span class="dot-a"></span>Tracking en tiempo real</div>
+    <div class="b"><span class="dot-y"></span>Orión ya opera en PVR</div>
+  </div>
+  <div class="foot reveal">Orión Administración S.A. de C.V. · Ing. José Germán Reyes Pacheco · Dirección General</div>
+</section>
+
+<!-- ════════════════════════════
+     S2 · EL PROBLEMA
+════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="tag warn reveal">El reto del pasajero retrasado</div>
+  <h2 class="reveal">El Equipaje Llega Tarde.<br>El Pasajero, No Espera.</h2>
+  <p class="sub reveal">Cada año, miles de pasajeros que aterrizan en PVR pierden o retrasan su equipaje. Sin un servicio BDO, la aerolínea gestiona un problema que puede volverse una queja formal — y una mala reseña.</p>
+
+  <div class="prob-grid reveal">
+    <div class="prob-before">
+      <div class="pb-label">Sin BDO — situación actual</div>
+      <ul class="plist">
+        <li>Pasajero espera horas en el aeropuerto</li>
+        <li>Aerolínea coordina con courier genérico</li>
+        <li>Sin tracking ni confirmación de entrega</li>
+        <li>Tiempos variables: 24–72 horas o más</li>
+        <li>Costo impredecible para la aerolínea</li>
+        <li>Riesgo alto de queja formal (DOT/PROFECO)</li>
+      </ul>
+    </div>
+    <div class="prob-after">
+      <div class="pb-label">Con BDO Orión — solución</div>
+      <ul class="plist">
+        <li>Pasajero se va al hotel de inmediato</li>
+        <li>Orión recoge el equipaje en mostrador</li>
+        <li>Tracking desde recolección hasta entrega</li>
+        <li>SLA garantizado: &lt;48 h zona 1, &lt;72 h zona 4</li>
+        <li>Tarifa fija por zona — costo predecible</li>
+        <li>Firma digital de recepción como evidencia</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot reveal">BDO = Baggage Delivery Order — Servicio de entrega de equipaje extraviado/retrasado a domicilio</div>
+</section>
+
+<!-- ════════════════════════════
+     S3 · CÓMO FUNCIONA
+════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="tag info reveal">Flujo operativo</div>
+  <h2 class="reveal">De la Pista al Hotel.<br>En Cuatro Pasos.</h2>
+  <p class="sub reveal">Orión recibe la instrucción directamente de la aerolínea — el pasajero no tiene que hacer nada más que llegar a su destino.</p>
+
+  <div class="tlist reveal">
+    <div class="titem ac">
+      <div class="ico">✈️</div>
+      <div>
+        <b>1 · Apertura de BDO</b>
+        <p>La aerolínea detecta el extravío/retraso y emite la Baggage Delivery Order — abre el caso con Orión vía sistema o WhatsApp.</p>
+      </div>
+    </div>
+    <div class="titem gc">
+      <div class="ico">🧳</div>
+      <div>
+        <b>2 · Recolección en aeropuerto</b>
+        <p>El equipo Orión en PVR recoge el equipaje en el área de reclamaciones. Hora de recolección registrada con foto y sello de tiempo.</p>
+      </div>
+    </div>
+    <div class="titem yc">
+      <div class="ico">🗺️</div>
+      <div>
+        <b>3 · Entrega en zona</b>
+        <p>Chofer asignado según zona. Tracking en tiempo real compartido con la aerolínea. Tiempo según zona: Z1 &lt;4h, Z2 &lt;6h, Z3 &lt;8h, Z4 coordinado.</p>
+      </div>
+    </div>
+    <div class="titem pc">
+      <div class="ico">✅</div>
+      <div>
+        <b>4 · Confirmación y cierre</b>
+        <p>Firma digital del pasajero, foto del equipaje entregado. Reporte enviado a la aerolínea como evidencia. BDO cerrado en sistema.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot reveal">Orión · BDO PVR · 2026</div>
+</section>
+
+<!-- ════════════════════════════
+     S4 · ZONAS DE COBERTURA
+════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="tag pur reveal">Cobertura geográfica · Puerto Vallarta & Riviera Nayarit</div>
+  <h2 class="reveal">4 Zonas.<br>Desde Marina Vallarta<br>hasta Punta Mita.</h2>
+
+  <div class="zone-grid reveal">
+    <div class="zone z1">
+      <div class="zone-label">Zona 1 · Local</div>
+      <div class="zone-price">$355</div>
+      <div class="zone-unit">MXN · hasta 4 maletas</div>
+      <div class="zone-places">Marina Vallarta · Centro · Zona Romántica · Fluvial · Versalles</div>
+    </div>
+    <div class="zone z2">
+      <div class="zone-label">Zona 2 · Nayarit Norte</div>
+      <div class="zone-price">$560</div>
+      <div class="zone-unit">MXN · hasta 4 maletas</div>
+      <div class="zone-places">Nuevo Vallarta · Flamingos · Conchas Chinas · Mismaloya</div>
+    </div>
+    <div class="zone z3">
+      <div class="zone-label">Zona 3 · Riviera</div>
+      <div class="zone-price">$740</div>
+      <div class="zone-unit">MXN · hasta 4 maletas</div>
+      <div class="zone-places">Bucerías · La Cruz de Huanacaxtle</div>
+    </div>
+    <div class="zone z4">
+      <div class="zone-label">Zona Foránea</div>
+      <div class="zone-price">$850+</div>
+      <div class="zone-unit">MXN base + $20/km adicional</div>
+      <div class="zone-places">Punta Mita · Sayulita · San Pancho · Litibú · Zonas especiales</div>
+    </div>
+  </div>
+
+  <div class="badge-row reveal" style="margin-top:1.2rem">
+    <div class="b"><span class="dot-a"></span>5ª maleta en adelante: +$50 c/u</div>
+    <div class="b"><span class="dot-y"></span>Urgente (&lt;3h): +75%</div>
+    <div class="b"><span class="dot-y"></span>Nocturno / Festivo (22:00–06:00): +40%</div>
+    <div class="b"><span class="dot-g"></span>2° intento de entrega: $150</div>
+  </div>
+  <div class="foot reveal">Orión · BDO PVR · Tarifas 2026 · Firmado: Ing. José Germán Reyes Pacheco</div>
+</section>
+
+<!-- ════════════════════════════
+     S5 · COMPARATIVO
+════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="tag info reveal">Análisis competitivo</div>
+  <h2 class="reveal">Orión BDO vs.<br>Las Alternativas.</h2>
+  <p class="sub reveal">No existe un competidor directo con operación estructurada en PVR. Orión es la única opción con presencia local, tracking y SLA garantizado.</p>
+
+  <table class="status-table reveal">
+    <thead>
+      <tr>
+        <th>Proveedor</th>
+        <th>Cobertura PVR</th>
+        <th>Tracking</th>
+        <th>Tarifa</th>
+        <th>SLA</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Orión BDO</td>
+        <td>4 zonas completas</td>
+        <td>Tiempo real</td>
+        <td>$355–$850+ MXN</td>
+        <td>&lt;48h Z1</td>
+        <td><span class="pill g"><span class="pill-dot"></span>Disponible</span></td>
+      </tr>
+      <tr>
+        <td>Taxi / Van</td>
+        <td>Zona urbana solo</td>
+        <td>Sin tracking</td>
+        <td>$600–$1,200 MXN</td>
+        <td>Variable</td>
+        <td><span class="pill y"><span class="pill-dot"></span>Sin contrato</span></td>
+      </tr>
+      <tr>
+        <td>United/Bags Inc.</td>
+        <td>Solo EUA</td>
+        <td>App propia</td>
+        <td>USD 29.95+</td>
+        <td>&lt;24h EUA</td>
+        <td><span class="pill y"><span class="pill-dot"></span>No opera en MX</span></td>
+      </tr>
+      <tr>
+        <td>LuggageForward</td>
+        <td>Internacional</td>
+        <td>Básico</td>
+        <td>USD 60–200+</td>
+        <td>2–5 días</td>
+        <td><span class="pill y"><span class="pill-dot"></span>Solo encomiendas</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="foot reveal">Orión · BDO PVR · Benchmarking Diciembre 2026</div>
+</section>
+
+<!-- ════════════════════════════
+     S6 · POR QUÉ ORIÓN
+════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="tag ops reveal">Ventajas competitivas</div>
+  <h2 class="reveal">¿Por Qué Orión?<br>Porque Ya Estamos Ahí.</h2>
+
+  <div class="two-col reveal">
+    <div>
+      <div class="tlist">
+        <div class="titem ac">
+          <div class="ico">📍</div>
+          <div>
+            <b>Presencia local confirmada</b>
+            <p>Orión opera en PVR desde antes. Conocemos el aeropuerto, las zonas hoteleras y las rutas de cada colonia.</p>
+          </div>
+        </div>
+        <div class="titem gc">
+          <div class="ico">📱</div>
+          <div>
+            <b>Sistema Mintaka integrado</b>
+            <p>Usamos la misma plataforma de asignaciones que ya corre en 6 estaciones nacionales — zero curva de aprendizaje.</p>
+          </div>
+        </div>
+        <div class="titem yc">
+          <div class="ico">🏆</div>
+          <div>
+            <b>Track record histórico</b>
+            <p>Operamos BDO en PVR por más de 10 años. Los procesos, las zonas y las tarifas están probados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="tlist">
+        <div class="titem pc">
+          <div class="ico">📊</div>
+          <div>
+            <b>Reportería para la aerolínea</b>
+            <p>Cada BDO genera un registro auditable: hora, foto, firma. Evidencia lista para disputas de pasajeros.</p>
+          </div>
+        </div>
+        <div class="titem ac">
+          <div class="ico">⚡</div>
+          <div>
+            <b>Activación inmediata</b>
+            <p>No hay infraestructura que instalar ni contratos que negociar con terceros. Firma → operación activa en días.</p>
+          </div>
+        </div>
+        <div class="titem gc">
+          <div class="ico">🔒</div>
+          <div>
+            <b>Responsabilidad civil cubierta</b>
+            <p>Orión trabaja bajo contrato formal con cobertura de seguro para el equipaje en tránsito.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot reveal">Orión Administración · BDO PVR · 2026</div>
+</section>
+
+<!-- ════════════════════════════
+     S7 · AEROLÍNEAS OBJETIVO
+════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="tag pur reveal">Mercado objetivo</div>
+  <h2 class="reveal">Las Aerolíneas con Mayor<br>Volumen de BDO en PVR.</h2>
+  <p class="sub reveal">Priorizamos aerolíneas de largo alcance con historial de equipaje extraviado por transbordos internacionales.</p>
+
+  <div class="airline-grid reveal">
+    <div class="airline-card hi">
+      <div class="airline-code">AM</div>
+      <div class="airline-name">Aeroméxico</div>
+      <div class="airline-vol">Alta prioridad</div>
+    </div>
+    <div class="airline-card hi">
+      <div class="airline-code">UA</div>
+      <div class="airline-name">United Airlines</div>
+      <div class="airline-vol">Alta prioridad</div>
+    </div>
+    <div class="airline-card hi">
+      <div class="airline-code">AA</div>
+      <div class="airline-name">American Airlines</div>
+      <div class="airline-vol">Alta prioridad</div>
+    </div>
+    <div class="airline-card hi">
+      <div class="airline-code">DL</div>
+      <div class="airline-name">Delta Air Lines</div>
+      <div class="airline-vol">Alta prioridad</div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-code">WN</div>
+      <div class="airline-name">Southwest</div>
+      <div class="airline-vol">Media prioridad</div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-code">AC</div>
+      <div class="airline-name">Air Canada</div>
+      <div class="airline-vol">Media prioridad</div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-code">WS</div>
+      <div class="airline-name">WestJet</div>
+      <div class="airline-vol">Media prioridad</div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-code">LH</div>
+      <div class="airline-name">Lufthansa</div>
+      <div class="airline-vol">Alta prioridad</div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-code">BA</div>
+      <div class="airline-name">British Airways</div>
+      <div class="airline-vol">Media prioridad</div>
+    </div>
+    <div class="airline-card">
+      <div class="airline-code">Y4</div>
+      <div class="airline-name">Volaris</div>
+      <div class="airline-vol">Baja prioridad</div>
+    </div>
+  </div>
+
+  <div class="badge-row reveal" style="margin-top:1rem">
+    <div class="b"><span class="dot-a"></span>Alta prioridad = vuelos de conexión internacional con alto ratio de extravíos</div>
+    <div class="b"><span class="dot-g"></span>Capacidad para contratar con múltiples aerolíneas simultáneamente</div>
+  </div>
+  <div class="foot reveal">Orión · BDO PVR · Estrategia Comercial 2026</div>
+</section>
+
+<!-- ════════════════════════════
+     S8 · PROYECCIÓN
+════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="tag ops reveal">Proyección financiera — Escenario conservador</div>
+  <h2 class="reveal">Potencial de Ingreso<br>Desde el Día 1.</h2>
+  <p class="sub reveal">Con <span class="hi-num">3–5 BDOs diarios</span> en temporada alta y una tarifa promedio de <span class="hi-green">$550 MXN</span>, el servicio genera ingresos netos positivos desde el primer mes.</p>
+
+  <div class="two-col reveal">
+    <div>
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem">BDOs estimados por aerolínea / mes</div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">AA / UA / DL</div>
+          <div class="bar-track"><div class="bar-fill ac" style="--w:72%"><div class="bar-val">~45/mes</div></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Aeroméxico</div>
+          <div class="bar-track"><div class="bar-fill gc" style="--w:55%"><div class="bar-val">~34/mes</div></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Air Canada</div>
+          <div class="bar-track"><div class="bar-fill yc" style="--w:38%"><div class="bar-val">~24/mes</div></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Lufthansa/BA</div>
+          <div class="bar-track"><div class="bar-fill pc" style="--w:25%"><div class="bar-val">~16/mes</div></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Resto</div>
+          <div class="bar-track"><div class="bar-fill ac" style="--w:18%"><div class="bar-val">~11/mes</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="stats-row" style="flex-direction:column;gap:.7rem;margin-top:0">
+        <div class="stat ac" style="min-width:0">
+          <div class="num">$71,500</div>
+          <div class="lbl">MXN / mes estimado (escenario base · 130 BDOs · $550 prom.)</div>
+        </div>
+        <div class="stat gc" style="min-width:0">
+          <div class="num">$858k</div>
+          <div class="lbl">MXN / año en escenario base. Temporada alta ~+40%</div>
+        </div>
+        <div class="stat yc" style="min-width:0">
+          <div class="num">60%</div>
+          <div class="lbl">Margen operativo estimado (infraestructura ya existente)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot reveal">Proyecciones conservadoras. Basadas en datos históricos de operación Orión y benchmarks de industria.</div>
+</section>
+
+<!-- ════════════════════════════
+     S9 · SIGUIENTE PASO
+════════════════════════════ -->
+<section class="slide closer" id="s9">
+  <div class="hero-orb" style="opacity:.7"></div>
+  <div class="scanline-el"></div>
+
+  <div class="tag pur reveal" style="text-align:center">Próximos pasos</div>
+  <div class="closer-icon reveal">🛄</div>
+  <h1 class="reveal" style="text-align:center;font-size:clamp(2rem,4.5vw,3.5rem)">¿Arrancamos?</h1>
+  <p class="sub reveal" style="text-align:center;margin:1rem auto 0">Orión tiene la operación, el sistema y el historial.<br>Solo se necesita la instrucción de la aerolínea.</p>
+
+  <div class="cta-cards reveal" style="max-width:720px;margin:1.4rem auto 0">
+    <div class="cta-card">
+      <div class="cc-lbl">Paso 1 · Esta semana</div>
+      <div class="cc-val">Reunión con representante de aerolínea prioritaria (AA / UA / DL)</div>
+    </div>
+    <div class="cta-card">
+      <div class="cc-lbl">Paso 2 · Semana 2</div>
+      <div class="cc-val">Firma de contrato BDO. Integración de sistema de notificación de extravíos.</div>
+    </div>
+    <div class="cta-card">
+      <div class="cc-lbl">Paso 3 · Semana 3</div>
+      <div class="cc-val ac">Primer BDO operativo en Puerto Vallarta.</div>
+    </div>
+    <div class="cta-card">
+      <div class="cc-lbl">Contacto directo</div>
+      <div class="cc-val gc">Ing. José Germán Reyes Pacheco<br>Dirección General · Orión</div>
+    </div>
+  </div>
+
+  <div class="foot reveal" style="text-align:center">Orión Administración S.A. de C.V. · BDO PVR · Propuesta Comercial 2026</div>
+</section>
+
+</div><!-- /deck -->
+
+<script>
+const SLIDES = document.querySelectorAll('.slide');
+const N = SLIDES.length;
+let cur = 0;
+
+const prog = document.getElementById('prog');
+const dotsEl = document.getElementById('dots');
+const snumEl = document.getElementById('snum');
+const hint = document.getElementById('hint');
+
+// Build dots
+SLIDES.forEach((_, i) => {
+  const d = document.createElement('span');
+  d.addEventListener('click', () => go(i));
+  dotsEl.appendChild(d);
+});
+
+function updateDots() {
+  dotsEl.querySelectorAll('span').forEach((d, i) => d.classList.toggle('on', i === cur));
+}
+
+function go(idx) {
+  if (idx < 0 || idx >= N || idx === cur) return;
+  SLIDES[cur].classList.remove('active');
+  SLIDES[cur].classList.add('leaving');
+  setTimeout(() => SLIDES[cur - (idx > cur ? 1 : -1) + (idx > cur ? 1 : -1) === idx ? cur : cur].classList.remove('leaving'), 600);
+  const prev = cur;
+  cur = idx;
+  SLIDES[cur].classList.add('active');
+  setTimeout(() => SLIDES[prev].classList.remove('leaving'), 600);
+  prog.style.width = ((cur + 1) / N * 100) + '%';
+  snumEl.textContent = (cur + 1) + ' / ' + N;
+  updateDots();
+}
+
+// Proper leaving cleanup
+function goTo(idx) {
+  if (idx < 0 || idx >= N || idx === cur) return;
+  const prev = cur;
+  SLIDES[prev].classList.remove('active');
+  SLIDES[prev].classList.add('leaving');
+  setTimeout(() => SLIDES[prev].classList.remove('leaving'), 650);
+  cur = idx;
+  SLIDES[cur].classList.add('active');
+  prog.style.width = ((cur + 1) / N * 100) + '%';
+  snumEl.textContent = (cur + 1) + ' / ' + N;
+  updateDots();
+}
+
+// Init
+SLIDES[0].classList.add('active');
+prog.style.width = (1 / N * 100) + '%';
+snumEl.textContent = '1 / ' + N;
+updateDots();
+
+// Hide hint after first interaction
+let hintHidden = false;
+function hideHint() {
+  if (!hintHidden) { hint.style.opacity = '0'; hintHidden = true; }
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  hideHint();
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                   { e.preventDefault(); goTo(cur - 1); }
+  if (e.key === 'Home') goTo(0);
+  if (e.key === 'End')  goTo(N - 1);
+});
+
+// Click
+document.addEventListener('click', e => {
+  if (e.target.closest('.dots')) return;
+  hideHint();
+  const half = window.innerWidth / 2;
+  goTo(e.clientX > half ? cur + 1 : cur - 1);
+});
+
+// Touch
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  hideHint();
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+});
+
+// Update dots on init
+dotsEl.querySelectorAll('span').forEach((d, i) => d.addEventListener('click', () => { hideHint(); goTo(i); }));
+</script>
+</body>
+</html>
