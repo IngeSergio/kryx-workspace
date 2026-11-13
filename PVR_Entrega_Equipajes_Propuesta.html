@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orión — Propuesta Entrega de Equipajes · PVR 2026</title>
+<style>
+  :root{
+    --navy:#060F1F; --navy2:#0D1E3A; --accent:#00D4FF; --gold:#F59E0B;
+    --green:#10B981; --red:#EF4444; --muted:#4A6080; --bg:#080E1C;
+    --card:#0D1E3A; --line:#1A2E4A; --white:#F0F6FF; --orange:#F97316;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased}
+  .deck{scroll-snap-type:y proximity}
+  .slide{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:7vh 9vw;position:relative;scroll-snap-align:start;border-bottom:1px solid var(--line);overflow:hidden}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .slide.in .reveal{opacity:1;transform:none}
+  .slide.in .reveal:nth-child(2){transition-delay:.08s}
+  .slide.in .reveal:nth-child(3){transition-delay:.16s}
+  .slide.in .reveal:nth-child(4){transition-delay:.24s}
+  .slide.in .reveal:nth-child(5){transition-delay:.32s}
+  .slide.in .reveal:nth-child(6){transition-delay:.40s}
+  .slide.in .reveal:nth-child(7){transition-delay:.48s}
+  .slide.in .reveal:nth-child(8){transition-delay:.56s}
+  .slide.in .reveal:nth-child(9){transition-delay:.64s}
+
+  h1{font-size:clamp(2.4rem,5.5vw,4.2rem);line-height:1.04;font-weight:800;letter-spacing:-.03em}
+  h2{font-size:clamp(1.7rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem}
+  h3{font-size:clamp(1rem,2vw,1.4rem);font-weight:700;margin-bottom:.5rem}
+  .sub{font-size:clamp(.95rem,1.6vw,1.25rem);color:#8AAFC8;font-weight:500;max-width:62ch;margin-top:.8rem;line-height:1.6}
+  .kicker{font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.32rem .75rem;border-radius:999px;margin-bottom:1.2rem}
+  .tag.sys{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.3)}
+  .tag.ops{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.3)}
+  .tag.data{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
+  .tag.warn{background:rgba(249,115,22,.1);color:var(--orange);border:1px solid rgba(249,115,22,.3)}
+
+  /* HERO */
+  .hero{background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(0,212,255,.13),transparent 60%),
+        radial-gradient(ellipse 50% 80% at 20% 80%,rgba(16,185,129,.09),transparent 60%),
+        linear-gradient(160deg,#040A16,#060F1F 50%,#0A1A30)}
+  .hero:after{content:"";position:absolute;width:55vw;height:55vw;right:-15vw;top:-15vw;
+    background:radial-gradient(circle,rgba(0,212,255,.07),transparent 65%);border-radius:50%;
+    animation:float 14s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(-2vw,2vw)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+  .logo-wrap{display:flex;align-items:center;gap:1rem;margin-bottom:2.8rem}
+  .logo-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#00D4FF,#0090A8);
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 0 32px rgba(0,212,255,.35)}
+  .logo-text{font-size:1.4rem;font-weight:800;letter-spacing:.04em}
+
+  .badge-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2.5rem}
+  .b{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    color:#A8C4DC;padding:.45rem 1rem;border-radius:999px;font-size:.82rem;font-weight:600;
+    display:flex;align-items:center;gap:.4rem}
+  .b .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .b .dot.g{background:var(--green)}
+  .b .dot.y{background:var(--gold)}
+  .b .dot.o{background:var(--orange)}
+
+  /* GRID + CARDS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem;align-items:start}
+  @media(max-width:700px){.grid-3,.grid-2{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.5rem;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .card .num{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.02em;line-height:1}
+  .card .lbl{color:#5A7A96;font-size:.88rem;margin-top:.45rem;font-weight:600;line-height:1.4}
+  .card.ac{background:linear-gradient(135deg,#004D5E,#006678);border:1px solid rgba(0,212,255,.3);box-shadow:0 8px 32px rgba(0,212,255,.12)}
+  .card.gc{background:linear-gradient(135deg,#054330,#075C40);border:1px solid rgba(16,185,129,.3);box-shadow:0 8px 32px rgba(16,185,129,.12)}
+  .card.yc{background:linear-gradient(135deg,#4A2E00,#6B4300);border:1px solid rgba(245,158,11,.3);box-shadow:0 8px 32px rgba(245,158,11,.12)}
+  .card.oc{background:linear-gradient(135deg,#431800,#6B2800);border:1px solid rgba(249,115,22,.3);box-shadow:0 8px 32px rgba(249,115,22,.12)}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;margin-top:1.6rem;font-size:.88rem}
+  th{background:rgba(0,212,255,.1);color:var(--accent);font-weight:700;padding:.75rem 1rem;text-align:left;border:1px solid var(--line);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+  td{padding:.7rem 1rem;border:1px solid var(--line);color:#C5D8E8;vertical-align:middle}
+  tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+  tr:hover td{background:rgba(0,212,255,.05)}
+  td.hl{color:var(--white);font-weight:700}
+  td.green{color:var(--green);font-weight:700}
+  td.gold{color:var(--gold);font-weight:700}
+  td.accent{color:var(--accent);font-weight:700}
+  td.orange{color:var(--orange);font-weight:700}
+  td.muted{color:#4A6080;font-size:.82rem}
+
+  /* ZONE MAP */
+  .zone-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+  @media(max-width:700px){.zone-wrap{grid-template-columns:1fr}}
+  .zone-card{border-radius:16px;padding:1.4rem 1.6rem;border:1px solid}
+  .zone-card h3{font-size:1rem;margin-bottom:.3rem}
+  .zone-card p{font-size:.88rem;line-height:1.55;opacity:.8}
+  .zone-card .km{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-bottom:.6rem}
+  .z1{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.3)}
+  .z1 h3{color:var(--accent)}
+  .z2{background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.3)}
+  .z2 h3{color:var(--green)}
+  .zkm{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.3)}
+  .zkm h3{color:var(--gold)}
+  .zurg{background:rgba(249,115,22,.07);border-color:rgba(249,115,22,.3)}
+  .zurg h3{color:var(--orange)}
+
+  /* BENCH */
+  .bench-row{display:flex;align-items:center;gap:1rem;padding:.8rem 1.2rem;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);margin-bottom:.7rem}
+  .bench-row .airline{font-weight:700;min-width:12ch;font-size:.9rem}
+  .bench-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+  .bench-bar{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+  .bench-row .price{min-width:8ch;text-align:right;font-weight:700;font-size:.9rem}
+
+  /* STEPS */
+  .steps{display:flex;flex-direction:column;gap:1rem;margin-top:1.8rem}
+  .step{display:flex;align-items:flex-start;gap:1.2rem;padding:1.1rem 1.4rem;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+  .step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0090A8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0;box-shadow:0 0 16px rgba(0,212,255,.3)}
+  .step-body h3{font-size:.95rem;margin-bottom:.2rem}
+  .step-body p{font-size:.85rem;color:#7A9AB8;line-height:1.5}
+
+  /* CTA */
+  .cta-wrap{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2.5rem}
+  .btn{padding:.85rem 2rem;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;display:inline-block}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),#0090A8);color:#050C1A;box-shadow:0 0 32px rgba(0,212,255,.3)}
+  .btn-secondary{background:transparent;color:var(--accent);border:2px solid rgba(0,212,255,.4)}
+
+  /* PROGRESS */
+  .progress{position:fixed;bottom:1.5rem;right:1.5rem;display:flex;gap:.4rem;z-index:100}
+  .dot-nav{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .3s,transform .3s;cursor:pointer}
+  .dot-nav.active{background:var(--accent);transform:scale(1.3)}
+
+  /* FOOTNOTE */
+  .footnote{font-size:.75rem;color:#3A5570;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);line-height:1.5}
+
+  /* DIVIDER */
+  .divider{width:48px;height:3px;background:linear-gradient(90deg,var(--accent),transparent);border-radius:2px;margin:1.2rem 0}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- SLIDE 1: COVER -->
+<section class="slide hero" id="s0">
+  <div class="logo-wrap reveal">
+    <div class="logo-icon">✈</div>
+    <div class="logo-text">ORIÓN <span>· PVR</span></div>
+  </div>
+  <div class="kicker reveal">Propuesta Comercial · Noviembre 2026</div>
+  <h1 class="reveal">Servicio de<br>Entrega de<br>Equipajes</h1>
+  <p class="sub reveal">Propuesta de retoma de operación en el Aeropuerto Internacional de Puerto Vallarta — estructura de tarifas, zonas y proyección de ingresos.</p>
+  <div class="badge-row reveal">
+    <div class="b"><span class="dot g"></span>Aeropuerto PVR — GAP</div>
+    <div class="b"><span class="dot y"></span>8 aerolíneas internacionales</div>
+    <div class="b"><span class="dot"></span>Tarifas 2026 actualizadas</div>
+    <div class="b"><span class="dot o"></span>Proyección $36M–$60M MXN/año</div>
+  </div>
+</section>
+
+<!-- SLIDE 2: OPORTUNIDAD DE MERCADO -->
+<section class="slide" id="s1">
+  <div class="kicker reveal">Por qué PVR ahora</div>
+  <h2 class="reveal">Oportunidad<br>de Mercado</h2>
+  <div class="divider reveal"></div>
+  <div class="grid reveal">
+    <div class="card ac">
+      <div class="num">6.5M</div>
+      <div class="lbl">Pasajeros anuales estimados<br>(recuperación post-pandemia)</div>
+    </div>
+    <div class="card gc">
+      <div class="num">~40%</div>
+      <div class="lbl">Tráfico internacional — 2.6M pax<br>perfil turista con equipaje pesado</div>
+    </div>
+    <div class="card yc">
+      <div class="num">3–5%</div>
+      <div class="lbl">Tasa de conversión estimada<br>al servicio de entrega</div>
+    </div>
+    <div class="card oc">
+      <div class="num">0</div>
+      <div class="lbl">Operador especializado activo<br>en el aeropuerto hoy — hueco libre</div>
+    </div>
+  </div>
+  <p class="sub reveal" style="margin-top:1.4rem">Puerto Vallarta es uno de los destinos turísticos de mayor crecimiento en México. El perfil del pasajero internacional — familias, grupos, turistas premium — es el cliente natural del servicio. <strong style="color:var(--white)">La operación está sin cobertura especializada.</strong></p>
+</section>
+
+<!-- SLIDE 3: ZONA DE PVR -->
+<section class="slide" id="s2">
+  <div class="kicker reveal">Geografía de operación</div>
+  <h2 class="reveal">Zonas de<br>Cobertura PVR</h2>
+  <div class="divider reveal"></div>
+  <div class="zone-wrap reveal">
+    <div class="zone-card z1">
+      <div class="km">Zona 1 · 0 – 8 km</div>
+      <h3>Marina Vallarta</h3>
+      <p>Hoteles frente al aeropuerto: Marriott, Westin, Meliá, Sheraton, Hilton, NH. Zona de mayor concentración hotelera de alto nivel. Tiempo de entrega: 10–20 min.</p>
+    </div>
+    <div class="zone-card z2">
+      <div class="km">Zona 2 · 8 – 22 km</div>
+      <h3>Zona Hotelera Sur &amp; Centro</h3>
+      <p>Fiesta Americana, Villa Vallarta, hoteles boutique del Centro Histórico, Zona Romántica, Conchas Chinas. Tiempo de entrega: 25–40 min.</p>
+    </div>
+    <div class="zone-card zkm">
+      <div class="km">Km. Fuera · 22+ km (por km adicional)</div>
+      <h3>Riviera Nayarit</h3>
+      <p>Nuevo Vallarta, Bucerías, La Cruz, Sayulita, Punta Mita. Destinos de lujo con huéspedes que pagan premium por servicio puerta-a-puerta.</p>
+    </div>
+    <div class="zone-card zurg">
+      <div class="km">Recargo</div>
+      <h3>Urgente / Doble Urgente</h3>
+      <p>Vuelos con tiempo reducido de escala o conexión inmediata. Recargo sobre tarifa base aplicable según acuerdo con aerolínea.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: TARIFA HISTÓRICA DE REFERENCIA -->
+<section class="slide" id="s3">
+  <div class="kicker reveal">Base histórica Orión ≈ 2014–2015</div>
+  <h2 class="reveal">Tarifa de<br>Referencia</h2>
+  <div class="divider reveal"></div>
+  <p class="sub reveal" style="margin-bottom:.5rem">Tarifas negociadas con aerolíneas en MEXT hace más de 10 años. Moneda: MXN (Hainan en USD).</p>
+  <div class="reveal" style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Aerolínea</th>
+        <th>Zona 1</th>
+        <th>P.A.1</th>
+        <th>Zona 2</th>
+        <th>P.A.2</th>
+        <th>Km.F</th>
+        <th>P.A.F</th>
+        <th>Urgente</th>
+        <th>D.Urgente</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="hl">Air France</td><td>220</td><td>60</td><td>400</td><td>80</td><td>12</td><td>80</td><td class="muted">+100%</td><td class="muted">+300%</td></tr>
+      <tr><td class="hl">Delta</td><td>320</td><td>65</td><td>450</td><td>85</td><td>10.5</td><td>85</td><td class="muted">+100%</td><td class="muted">—</td></tr>
+      <tr><td class="hl">Lufthansa</td><td>234</td><td>64</td><td>340</td><td>85</td><td>8.5</td><td>85</td><td class="muted">+50%</td><td class="muted">+200%</td></tr>
+      <tr><td class="hl">KLM</td><td>220</td><td>60</td><td>400</td><td>80</td><td>12</td><td>80</td><td class="muted">+100%</td><td class="muted">+200%</td></tr>
+      <tr><td class="hl">Alaska</td><td>190</td><td>50</td><td>300</td><td>50</td><td>8</td><td>50</td><td class="muted">+100%</td><td class="muted">—</td></tr>
+      <tr><td class="hl">Avianca</td><td>235</td><td>50</td><td>330</td><td>60</td><td>8</td><td>60</td><td class="muted">+100%</td><td class="muted">+300%</td></tr>
+      <tr><td class="hl">Emirates</td><td>315</td><td>81</td><td>450</td><td>90</td><td>18</td><td>90</td><td class="muted">—</td><td class="muted">—</td></tr>
+      <tr><td class="hl">Hainan</td><td class="gold">9.5 USD</td><td class="gold">2 USD</td><td class="gold">15 USD</td><td class="gold">3 USD</td><td class="gold">0.5 USD</td><td class="gold">4 USD</td><td class="muted">+100%</td><td class="muted">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="footnote reveal">P.A. = Pieza Adicional · Km.F = Kilómetro Fuera de zona · P.A.F = Pieza Adicional Fuera · D.Urgente = Doble Urgente</p>
+</section>
+
+<!-- SLIDE 5: BENCHMARK MERCADO ACTUAL -->
+<section class="slide" id="s4">
+  <div class="kicker reveal">Benchmarks 2025–2026</div>
+  <h2 class="reveal">Referencia de<br>Mercado Actual</h2>
+  <div class="divider reveal"></div>
+  <p class="sub reveal">Inflación acumulada MXN 2015→2026: ~90%. USD/MXN: de ~13 a ~17.5 (+35%). Los precios de mercado han crecido considerablemente sobre los históricos de Orión.</p>
+
+  <div class="reveal" style="margin-top:1.6rem">
+    <p style="font-size:.82rem;color:#5A7A96;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem">Tarifa primera pieza (Zona 1 equivalente)</p>
+
+    <div class="bench-row">
+      <span class="airline">United Airlines<br><span style="font-size:.72rem;color:#4A6080;font-weight:400">"Deliver Your Bags"<br>via Bags/SP+</span></span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:92%;background:linear-gradient(90deg,#4B6EF5,#7C3AED)"></div></div>
+      <span class="price" style="color:#818CF8">~$30 USD<br><span style="font-size:.72rem;color:#4A6080">≈ 525 MXN</span></span>
+    </div>
+
+    <div class="bench-row">
+      <span class="airline">Orión MEXT<br><span style="font-size:.72rem;color:#4A6080;font-weight:400">Histórico + inflación<br>(×1.9)</span></span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:68%;background:linear-gradient(90deg,var(--accent),#0090A8)"></div></div>
+      <span class="price accent">360–600 MXN</span>
+    </div>
+
+    <div class="bench-row">
+      <span class="airline">LuggageForward<br><span style="font-size:.72rem;color:#4A6080;font-weight:400">Internacional<br>door-to-door</span></span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:100%;background:linear-gradient(90deg,var(--gold),#D97706)"></div></div>
+      <span class="price gold">$50–80 USD<br><span style="font-size:.72rem;color:#4A6080">≈ 875–1,400 MXN</span></span>
+    </div>
+
+    <div class="bench-row">
+      <span class="airline">Propuesta<br>Orión PVR 2026</span>
+      <div class="bench-bar-wrap"><div class="bench-bar" style="width:46%;background:linear-gradient(90deg,var(--green),#059669)"></div></div>
+      <span class="price green">400 MXN Z1<br>580 MXN Z2</span>
+    </div>
+  </div>
+
+  <p class="footnote reveal">La propuesta de Orión se posiciona por debajo de United/Bags (+25-30% más barato para la aerolínea) y muy por debajo del mercado premium internacional — ventaja competitiva directa en negociación.</p>
+</section>
+
+<!-- SLIDE 6: TARIFA PROPUESTA PVR 2026 -->
+<section class="slide" id="s5">
+  <div class="kicker reveal">Tarifa propuesta — negociación base</div>
+  <h2 class="reveal">Rate Card<br>PVR 2026</h2>
+  <div class="divider reveal"></div>
+  <div class="reveal" style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Concepto</th>
+        <th>Tarifa Base</th>
+        <th>Moneda</th>
+        <th>Referencia histórica MEXT</th>
+        <th>Factor aplicado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="hl">Zona 1 — 1ª pieza</td><td class="accent">400 MXN</td><td>MXN</td><td>190–320 MXN</td><td class="green">×1.9 inflación</td></tr>
+      <tr><td class="hl">Zona 1 — P.A.</td><td class="accent">100 MXN</td><td>MXN</td><td>50–81 MXN</td><td class="green">×1.9 inflación</td></tr>
+      <tr><td class="hl">Zona 2 — 1ª pieza</td><td class="accent">580 MXN</td><td>MXN</td><td>300–450 MXN</td><td class="green">×1.9 inflación</td></tr>
+      <tr><td class="hl">Zona 2 — P.A.</td><td class="accent">110 MXN</td><td>MXN</td><td>50–90 MXN</td><td class="green">×1.9 inflación</td></tr>
+      <tr><td class="hl">Km. Fuera (por km)</td><td class="accent">22 MXN</td><td>MXN/km</td><td>8–18 MXN</td><td class="green">×1.9 inflación</td></tr>
+      <tr><td class="hl">P.A. Fuera de zona</td><td class="accent">110 MXN</td><td>MXN</td><td>50–90 MXN</td><td class="green">×1.9 inflación</td></tr>
+      <tr><td class="hl">Recargo Urgente</td><td class="orange">+100%</td><td>%</td><td>+50–100%</td><td class="muted">Estándar</td></tr>
+      <tr><td class="hl">Recargo Doble Urgente</td><td class="orange">+200%</td><td>%</td><td>+200–300%</td><td class="muted">Piso de mercado</td></tr>
+      <tr><td class="hl" style="color:var(--gold)">Punta Mita / Riviera Nayarit</td><td class="gold">22 MXN/km</td><td>MXN/km</td><td colspan="2" class="muted">Desde km 22 · destinos premium · tarifa acordable USD</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="reveal" style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.2rem">
+    <span class="tag sys">Zona 1 ≈ 24% más barato que United/Bags</span>
+    <span class="tag ops">Negociable aerolínea por aerolínea</span>
+    <span class="tag data">USD disponible para aerolíneas extranjeras</span>
+  </div>
+  <p class="footnote reveal">Tarifas base de apertura. Se recomienda margen de negociación del ±15% por volumen de operación o exclusividad de ruta. Para aerolíneas de largo alcance (Emirates, Lufthansa, aerolíneas asiáticas) se sugiere tarificación en USD a TC vigente.</p>
+</section>
+
+<!-- SLIDE 7: PROYECCIÓN DE INGRESOS -->
+<section class="slide" id="s6">
+  <div class="kicker reveal">Escenario financiero estimado</div>
+  <h2 class="reveal">Proyección<br>de Ingresos</h2>
+  <div class="divider reveal"></div>
+  <div class="grid-3 reveal">
+    <div class="card">
+      <div class="kicker" style="margin-bottom:.4rem">Escenario Conservador</div>
+      <div class="num" style="color:#8AAFC8">3%</div>
+      <div class="lbl">conversión · ~78,000 servicios/año</div>
+      <div style="margin-top:1rem;font-size:1.3rem;font-weight:800;color:#8AAFC8">~$36M MXN</div>
+      <div class="lbl">ingresos brutos anuales</div>
+    </div>
+    <div class="card gc">
+      <div class="kicker" style="margin-bottom:.4rem;color:var(--green)">Escenario Base</div>
+      <div class="num">4%</div>
+      <div class="lbl">conversión · ~104,000 servicios/año</div>
+      <div style="margin-top:1rem;font-size:1.3rem;font-weight:800;color:var(--green)">~$48M MXN</div>
+      <div class="lbl">ingresos brutos anuales</div>
+    </div>
+    <div class="card ac">
+      <div class="kicker" style="margin-bottom:.4rem">Escenario Optimista</div>
+      <div class="num">5%</div>
+      <div class="lbl">conversión · ~130,000 servicios/año</div>
+      <div style="margin-top:1rem;font-size:1.3rem;font-weight:800;color:var(--accent)">~$60M MXN</div>
+      <div class="lbl">ingresos brutos anuales</div>
+    </div>
+  </div>
+  <div class="reveal" style="margin-top:1.6rem">
+    <p style="font-size:.82rem;color:#5A7A96;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">Supuestos del modelo</p>
+    <div class="grid-2" style="margin-top:0;gap:1rem">
+      <div class="card" style="padding:1rem 1.2rem">
+        <ul style="font-size:.85rem;color:#8AAFC8;line-height:1.7;padding-left:1rem">
+          <li>6.5M pasajeros totales anuales PVR</li>
+          <li>40% tráfico internacional: 2.6M pax</li>
+          <li>Ticket promedio ponderado: ~460 MXN</li>
+          <li>Mezcla 65% Zona 1 / 35% Zona 2</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:1rem 1.2rem">
+        <ul style="font-size:.85rem;color:#8AAFC8;line-height:1.7;padding-left:1rem">
+          <li>1.5–1.8 piezas promedio por pax</li>
+          <li>Inicio con 2–3 aerolíneas ancla</li>
+          <li>Rampa: 6 meses para escenario base</li>
+          <li>Punta Mita / Riviera Nayarit: upside en Km.F</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: PLAN DE IMPLEMENTACIÓN -->
+<section class="slide" id="s7">
+  <div class="kicker reveal">Ruta de retoma</div>
+  <h2 class="reveal">Plan de<br>Implementación</h2>
+  <div class="divider reveal"></div>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Acercamiento a GAP y autoridades del aeropuerto PVR</h3>
+        <p>Validar términos de concesión de espacio operativo en sala de llegadas internacionales. Identificar si hay operador actual y condiciones contractuales.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Negociación con aerolíneas ancla: United, Delta, Alaska</h3>
+        <p>Presentar rate card ajustado. United opera 15+ frecuencias semanales a PVR (clave: Chicago O'Hare, Houston, LA). Delta y Alaska con operación consolidada. Usar relación previa en MEXT como palanca.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Estructura operativa mínima viable</h3>
+        <p>2–4 operadores por turno, 1 coordinador de zona, vehículo de carga ligero para Riviera Nayarit. Sistema Mintaka para tracking de servicios desde día 1.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Soft launch: 90 días piloto</h3>
+        <p>Medir conversión real, tiempo de entrega, satisfacción. Ajustar tarifas y zonas con datos reales antes de cerrar contratos anuales.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: AEROLÍNEAS PRIORITARIAS PVR -->
+<section class="slide" id="s8">
+  <div class="kicker reveal">Targets de negociación</div>
+  <h2 class="reveal">Aerolíneas<br>Prioritarias PVR</h2>
+  <div class="divider reveal"></div>
+  <div class="reveal" style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Aerolínea</th>
+        <th>Mercado principal</th>
+        <th>Frecuencias est. PVR</th>
+        <th>Tarifa propuesta Z1</th>
+        <th>Prioridad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="hl">United Airlines</td><td>EUA (Chicago, Houston, LA, Denver)</td><td>15–20/sem</td><td class="accent">400 MXN</td><td class="green">🔥 Alta — base del pitch</td></tr>
+      <tr><td class="hl">American Airlines</td><td>EUA (DFW, Phoenix, Charlotte)</td><td>12–16/sem</td><td class="accent">400 MXN</td><td class="green">🔥 Alta</td></tr>
+      <tr><td class="hl">Delta Air Lines</td><td>EUA (Atlanta, LA, Salt Lake)</td><td>8–12/sem</td><td class="accent">400 MXN</td><td class="green">Alta — histórico</td></tr>
+      <tr><td class="hl">Alaska Airlines</td><td>EUA (Seattle, SF, Portland)</td><td>6–10/sem</td><td class="accent">360 MXN</td><td class="gold">Media — histórico</td></tr>
+      <tr><td class="hl">WestJet</td><td>Canadá (Calgary, Toronto, Vancouver)</td><td>6–8/sem</td><td class="accent">420 MXN</td><td class="gold">Media — temporada alta</td></tr>
+      <tr><td class="hl">Air Canada</td><td>Canadá (Montreal, Toronto)</td><td>4–6/sem</td><td class="accent">420 MXN</td><td class="gold">Media</td></tr>
+      <tr><td class="hl">Aeromexico</td><td>México (MEXT, GDL, MTY)</td><td>14–18/sem</td><td class="accent">350 MXN</td><td class="muted">Baja — doméstico</td></tr>
+      <tr><td class="hl">Southwest</td><td>EUA (Dallas, Phoenix, Denver)</td><td>6–10/sem</td><td class="accent">380 MXN</td><td class="gold">Media — volumen</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="footnote reveal">Frecuencias estimadas en base a temporada alta (nov–mar). Ajustar en temporada baja (~30% reducción). United y American representan ~40% del tráfico internacional total de PVR.</p>
+</section>
+
+<!-- SLIDE 10: CTA -->
+<section class="slide hero" id="s9">
+  <div class="kicker reveal">Próximo paso</div>
+  <h2 class="reveal">Listos para<br>retomar PVR</h2>
+  <div class="divider reveal"></div>
+  <p class="sub reveal">Orión tiene el histórico, la tecnología (Mintaka) y la estructura operativa para activar PVR en menos de 90 días. El hueco existe, las tarifas son competitivas y la temporada alta 2026–2027 está encima.</p>
+
+  <div class="grid-3 reveal" style="margin-top:1.8rem">
+    <div class="card" style="text-align:center;padding:1.2rem">
+      <div style="font-size:2rem;margin-bottom:.6rem">📋</div>
+      <div class="lbl" style="font-size:.88rem;line-height:1.4">Validar disponibilidad<br>de concesión con GAP</div>
+    </div>
+    <div class="card ac" style="text-align:center;padding:1.2rem">
+      <div style="font-size:2rem;margin-bottom:.6rem">✈</div>
+      <div class="lbl" style="font-size:.88rem;line-height:1.4">Acercamiento a United<br>y American PVR Station</div>
+    </div>
+    <div class="card gc" style="text-align:center;padding:1.2rem">
+      <div style="font-size:2rem;margin-bottom:.6rem">🚀</div>
+      <div class="lbl" style="font-size:.88rem;line-height:1.4">Pilot 90 días<br>dic 2026 – mar 2027</div>
+    </div>
+  </div>
+
+  <div class="badge-row reveal" style="margin-top:2rem">
+    <div class="b"><span class="dot g"></span>Ing. Sergio Iván Guillén Pacheco</div>
+    <div class="b"><span class="dot"></span>Orión — Soporte y Servicios Complementarios de Aviación</div>
+    <div class="b"><span class="dot y"></span>Noviembre 2026</div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- NAV DOTS -->
+<div class="progress" id="nav"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+
+  slides.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot-nav' + (i===0?' active':'');
+    d.onclick = ()=> slides[i].scrollIntoView({behavior:'smooth'});
+    nav.appendChild(d);
+  });
+
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        const idx = [...slides].indexOf(e.target);
+        document.querySelectorAll('.dot-nav').forEach((d,i)=> d.classList.toggle('active',i===idx));
+      }
+    });
+  },{threshold:.35});
+
+  slides.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
